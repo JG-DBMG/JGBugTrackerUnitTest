@@ -14,6 +14,32 @@ namespace JGBugTracker.Services
             _context = context;
         }
 
+        public async Task AddNewTicketAsync(Ticket ticket)
+        {
+            try
+            {
+                _context.Add(ticket);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task ArchiveTicketAsync(Ticket ticket)
+        {
+            try
+            {
+                ticket.Archived = true;
+                await UpdateTicketAsync(ticket);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<List<Ticket>> GetAllTicketsByCompanyIdAsync(int companyId)
         {
             List<Ticket> tickets = new List<Ticket>();
@@ -29,10 +55,46 @@ namespace JGBugTracker.Services
                                                 .Include(p => p.TicketType)
                                                 .Include(p => p.Project)
                                              .ToListAsync();
-            //Second Solution
-            //List<Ticket> bTickets = await _context.Tickets.Include(t => t.Project).Where(t => t.Project.CompanyId == companyId).ToListAsync();
-                                                       
             return tickets;
+        }
+
+        public async Task<Ticket> GetTicketByIdAsync(int ticketId)
+        {
+            try
+            {
+                Ticket? ticket = new();
+
+                ticket = await _context.Tickets
+                .Include(t => t.DeveloperUser)
+                .Include(t => t.SubmitterUser)
+                .Include(t => t.Project)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType)
+                .Include(t => t.Comments)
+                .Include(t => t.Attachments)
+                .Include(t => t.History)
+                .FirstOrDefaultAsync(m => m.Id == ticketId);
+
+                return ticket!;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task UpdateTicketAsync(Ticket ticket)
+        {
+            try
+            {
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

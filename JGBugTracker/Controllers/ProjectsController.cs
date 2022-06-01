@@ -10,6 +10,9 @@ using JGBugTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using JGBugTracker.Services.Interfaces;
+using JGBugTracker.Extensions;
+using JGBugTracker.Models.ViewModels;
+using JGBugTracker.Models.Enums;
 
 namespace JGBugTracker.Controllers
 {
@@ -18,22 +21,24 @@ namespace JGBugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTProjectService _projectService;
+        private readonly IBTRolesService _rolesService;
 
         public ProjectsController(ApplicationDbContext context,
                                   UserManager<BTUser> userManager,
-                                  IBTProjectService projectService)
+                                  IBTProjectService projectService,
+                                  IBTRolesService rolesService)
         {
             _context = context;
             _userManager = userManager;
             _projectService = projectService;
+            _rolesService = rolesService;
         }
 
         // GET: Projects
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            BTUser btUser = await _userManager.GetUserAsync(User);
-            int companyId = btUser.CompanyId;
+            int companyId = User.Identity!.GetCompanyId();
             List<Project> projects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
             return View(projects);
         }
@@ -46,7 +51,8 @@ namespace JGBugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _projectService.GetProjectByIdAsync(id.Value);
+            int companyId = User.Identity!.GetCompanyId();
+            Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
 
             if (project == null)
             {
@@ -57,11 +63,17 @@ namespace JGBugTracker.Controllers
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
-            return View();
+            //Refactor for View Model
+
+            AddProjectWithPMViewModel model = new();
+            int companyId = User.Identity!.GetCompanyId();
+
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager),companyId), "Id", "FullName");
+            model.PriorityList = new SelectList(_context.ProjectPriorities, "Id", "Name");
+
+            return View(model);
         }
 
         // POST: Projects/Create
@@ -69,16 +81,35 @@ namespace JGBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileName,ImageFileData,ImageFileContentType,Archived,Priority")] Project project)
+        public async Task<IActionResult> Create(AddProjectWithPMViewModel model)
         {
+            //ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", model.Project!.ProjectPriorityId);
             if (ModelState.IsValid)
             {
-                await _projectService.AddNewProjectAsync(project);
+                model.Project!.CompanyId = User.Identity!.GetCompanyId();
+                model.Project.Created = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Utc);
+                model.Project.StartDate = DateTime.SpecifyKind((DateTime)model.Project.StartDate!, DateTimeKind.Utc);
+                model.Project.EndDate = DateTime.SpecifyKind((DateTime)model.Project.EndDate!, DateTimeKind.Utc);
+
+                //Call Service Method to add new project
+                await _projectService.AddNewProjectAsync(model.Project);
+
+                //TODO Add Project Manager
+                if (!string.IsNullOrEmpty(model.PMID))
+                {
+                    await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
-            return View(project);
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName");
+            model.PriorityList = new SelectList(_context.ProjectPriorities, "Id", "Name");
+
+            return View(model.Project);
         }
 
         // GET: Projects/Edit/5
@@ -89,13 +120,14 @@ namespace JGBugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _projectService.GetProjectByIdAsync(id.Value);
+            int companyId = User.Identity!.GetCompanyId();
+            var project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
 
             if (project == null)
             {
                 return NotFound();
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
+
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
             return View(project);
         }
@@ -105,7 +137,7 @@ namespace JGBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileName,ImageFileData,ImageFileContentType,Archived,Priority")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,EndDate,ProjectPriorityId,ImageFormFile,Priority")] Project project)
         {
             if (id != project.Id)
             {
@@ -116,6 +148,10 @@ namespace JGBugTracker.Controllers
             {
                 try
                 {
+                    project.CompanyId = User.Identity!.GetCompanyId();
+                    project.Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
+                    project.StartDate = DateTime.SpecifyKind((DateTime)project.StartDate!, DateTimeKind.Utc);
+                    project.EndDate = DateTime.SpecifyKind((DateTime)project.EndDate!, DateTimeKind.Utc);
                     await _projectService.UpdateProjectAsync(project);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -131,7 +167,6 @@ namespace JGBugTracker.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
             return View(project);
         }
@@ -143,8 +178,9 @@ namespace JGBugTracker.Controllers
             {
                 return NotFound();
             }
-
-            var project = await _projectService.GetProjectByIdAsync(id.Value);
+            
+            int companyId = User.Identity!.GetCompanyId();
+            Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
 
             if (project == null)
             {
@@ -157,14 +193,15 @@ namespace JGBugTracker.Controllers
         // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            if (_context.Projects == null)
+            if (id == null || _context.Projects == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
             }
-
-            var project = await _projectService.GetProjectByIdAsync(id.Value);
+            
+            int companyId = User.Identity!.GetCompanyId();
+            Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
 
             if (project != null)
             {
