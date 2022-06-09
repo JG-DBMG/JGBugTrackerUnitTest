@@ -1,7 +1,13 @@
-﻿@model JGBugTracker.Models.Company
+﻿@using JGBugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@model JGBugTracker.Models.Company
+
+@inject IBTRolesService _rolesService
+@inject UserManager<BTUser> _userManager
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "CompanyDetails";
+    BTUser btUser = await _userManager.GetUserAsync(User);
 }
 
 <h1>Details</h1>
@@ -10,18 +16,27 @@
     <h4>Company</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
+        <div class="row">
+            <div class="card">
+                <h5>Company Members</h5>
+                @foreach (BTUser member in Model.Members)
+                {
+                    <p>@(await _rolesService.GetUserRoleAsync(member)): @member.FullName</p>
+                }
+            </div>
+        </div>
     </dl>
 </div>
 <div>

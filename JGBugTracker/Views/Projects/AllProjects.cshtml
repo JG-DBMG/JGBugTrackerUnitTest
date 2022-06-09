@@ -1,0 +1,103 @@
+﻿@using JGBugTracker.Models.Enums
+@using JGBugTracker.Services.Interfaces
+@model IEnumerable<JGBugTracker.Models.Project>
+@*@model JGBugTracker.Models.ViewModels.AddProjectWithPMViewModel*@
+
+@inject IBTFileService _fileService
+@inject IBTProjectService _projectService
+
+@{
+    ViewData["Title"] = "AllProjects";
+}
+
+<h1>All Projects</h1>
+@if (User.IsInRole(nameof(BTRoles.Admin)))
+{
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                Project Image
+            </th>
+            <th>
+                Project Manager
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectPriority)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Project item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.EndDate)
+                </td>
+                <td>
+                    @if (item.ImageFileData != null)
+                    {
+                        <img class="img-fluid" src="@_fileService.ConvertByteArrayToFile(item.ImageFileData!, item.ImageFileContentType!)">
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole(nameof(BTRoles.Admin)))
+                    {
+                        BTUser projectManager = await _projectService.GetProjectManagerAsync(item.Id);
+                        if (projectManager != null)
+                        {
+                            <p>
+                            @projectManager.FullName
+                            </p>
+                        }
+                        else
+                        {
+                            <a asp-action="AssignProjectManager" asp-route-id="@item.Id">AssignPM</a>
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.ProjectPriority!.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Archive" asp-route-id="@item.Id">Archive</a> |
+                    <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Manage Team</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

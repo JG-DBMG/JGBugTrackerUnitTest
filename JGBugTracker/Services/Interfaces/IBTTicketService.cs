@@ -8,9 +8,18 @@ namespace JGBugTracker.Services.Interfaces
 
         public Task ArchiveTicketAsync(Ticket ticket);
 
+        public Task<List<Ticket>> GetAllTicketsByIdAsync(int ticketId);
+
         public Task<List<Ticket>> GetAllTicketsByCompanyIdAsync(int companyId);
 
+        public Task<List<Ticket>> GetAllArchivedTicketsByCompanyIdAsync(int companyId);
+
         public Task<Ticket> GetTicketByIdAsync(int ticketId);
+
+        public Task<List<Ticket>> GetUnassignedTicketsAsync(int ticketId);
+
+        public Task RestoreTicketAsync(Ticket ticket);
+
 
         public Task UpdateTicketAsync(Ticket ticket);
     }

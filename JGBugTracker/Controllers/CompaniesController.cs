@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JGBugTracker.Data;
 using JGBugTracker.Models;
+using JGBugTracker.Services.Interfaces;
 
 namespace JGBugTracker.Controllers
 {
     public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTCompanyInfoService _infoService;
 
-        public CompaniesController(ApplicationDbContext context)
+        public CompaniesController(ApplicationDbContext context, 
+                                   IBTCompanyInfoService infoService)
         {
             _context = context;
+            _infoService = infoService;
         }
 
         // GET: Companies
@@ -36,7 +40,8 @@ namespace JGBugTracker.Controllers
             }
 
             var company = await _context.Companies
-                .FirstOrDefaultAsync(m => m.Id == id);
+                                                  .Include(m => m.Members)
+                                                  .FirstOrDefaultAsync(m => m.Id == id);
             if (company == null)
             {
                 return NotFound();

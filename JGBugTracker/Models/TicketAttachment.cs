@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using JGBugTracker.Extensions;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,7 +22,8 @@ namespace JGBugTracker.Models
         public string? UserId { get; set; }
         [NotMapped]
         [DataType(DataType.Upload)]
-        // TODO: Add Custom Attributes
+        [MaxFileSize(1024 * 1024)]
+        [AllowedExtensions(new string[] {".jpg",".jpeg",".png",".doc",".docx",".xls",".xlsx",".pdf",".ppt",".pptx",".html",".svg" })]
         public IFormFile? FormFile { get; set; }
         [DisplayName("File Name")]
         public string? FileName { get; set; }
