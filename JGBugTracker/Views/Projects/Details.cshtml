@@ -1,4 +1,5 @@
-﻿@using JGBugTracker.Services.Interfaces
+﻿@using JGBugTracker.Models.Enums
+@using JGBugTracker.Services.Interfaces
 @using Microsoft.AspNetCore.Identity
 @model JGBugTracker.Models.Project
 
@@ -93,6 +94,9 @@
     </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    @if (User.IsInRole(nameof(BTRoles.Admin)))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> <span>|</span>
+    }
     <a asp-action="AllProjects">Back to All Projects</a>
 </div>

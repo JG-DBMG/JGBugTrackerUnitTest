@@ -263,14 +263,12 @@ namespace JGBugTracker.Controllers
             return RedirectToAction(nameof(AllTickets));
         }
 
-        public async Task<IActionResult> MyTickets(int? id)
+        public async Task<IActionResult> MyTickets()
         {
-            if (id == null || _context.Tickets == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Tickets'  is null.");
-            }
+            int companyId = User.Identity!.GetCompanyId();
+            string userId = _userManager.GetUserId(User);
 
-            List<Ticket> tickets = await _ticketService.GetAllTicketsByIdAsync(id.Value);
+            List<Ticket> tickets = await _ticketService.GetTicketsByUserIdAsync(userId,companyId);
             return View(tickets);
         }
 
