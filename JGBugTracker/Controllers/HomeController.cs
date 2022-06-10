@@ -1,4 +1,5 @@
 ﻿using JGBugTracker.Models;
+using JGBugTracker.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -27,6 +28,15 @@ namespace JGBugTracker.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Dashboard()
+        {
+            DashboardViewModel model = new();
+
+
+
+            return View(model);
         }
     }
 }

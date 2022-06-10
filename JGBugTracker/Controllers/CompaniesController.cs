@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using JGBugTracker.Data;
 using JGBugTracker.Models;
 using JGBugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JGBugTracker.Controllers
 {
@@ -23,6 +24,7 @@ namespace JGBugTracker.Controllers
             _infoService = infoService;
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Companies
         public async Task<IActionResult> Index()
         {
@@ -31,6 +33,7 @@ namespace JGBugTracker.Controllers
                           Problem("Entity set 'ApplicationDbContext.Companies'  is null.");
         }
 
+        [AllowAnonymous]
         // GET: Companies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -50,6 +53,7 @@ namespace JGBugTracker.Controllers
             return View(company);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Companies/Create
         public IActionResult Create()
         {
@@ -59,6 +63,7 @@ namespace JGBugTracker.Controllers
         // POST: Companies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] Company company)
@@ -73,6 +78,7 @@ namespace JGBugTracker.Controllers
         }
 
         // GET: Companies/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Companies == null)
@@ -91,6 +97,7 @@ namespace JGBugTracker.Controllers
         // POST: Companies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Company company)
@@ -124,6 +131,7 @@ namespace JGBugTracker.Controllers
         }
 
         // GET: Companies/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Companies == null)
@@ -142,6 +150,7 @@ namespace JGBugTracker.Controllers
         }
 
         // POST: Companies/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

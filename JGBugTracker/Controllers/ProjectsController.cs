@@ -203,8 +203,8 @@ namespace JGBugTracker.Controllers
                 }
                 model.Project!.CompanyId = User.Identity!.GetCompanyId();
                 model.Project.Created = DateTime.SpecifyKind(DateTime.Now,DateTimeKind.Utc);
-                model.Project.StartDate = DateTime.SpecifyKind((DateTime)model.Project.StartDate!, DateTimeKind.Utc);
-                model.Project.EndDate = DateTime.SpecifyKind((DateTime)model.Project.EndDate!, DateTimeKind.Utc);
+                model.Project.StartDate = DateTime.SpecifyKind(model.Project.StartDate!, DateTimeKind.Utc);
+                model.Project.EndDate = DateTime.SpecifyKind(model.Project.EndDate!, DateTimeKind.Utc);
 
                 //Call Service Method to add new project
                 await _projectService.AddNewProjectAsync(model.Project);

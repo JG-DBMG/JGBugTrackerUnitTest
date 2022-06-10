@@ -21,6 +21,7 @@ namespace JGBugTracker.Models
         [Required]
         public string? UserId { get; set; }
         [NotMapped]
+        [DisplayName("Select a file")]
         [DataType(DataType.Upload)]
         [MaxFileSize(1024 * 1024)]
         [AllowedExtensions(new string[] {".jpg",".jpeg",".png",".doc",".docx",".xls",".xlsx",".pdf",".ppt",".pptx",".html",".svg" })]
