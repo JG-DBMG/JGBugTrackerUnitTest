@@ -17,6 +17,7 @@ namespace JGBugTracker.Services
             _rolesService = rolesService;
         }
 
+        #region Add New Project
         public async Task AddNewProjectAsync(Project project)
         {
             try
@@ -29,8 +30,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Add Project Manager
         public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
         {
             BTUser currentPM = await GetProjectManagerAsync(projectId);
@@ -61,6 +63,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
+
+        #region Add User To Project
         public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
         {
             BTUser? btUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -93,8 +98,9 @@ namespace JGBugTracker.Services
                 return false;
             }
         }
+        #endregion
 
-
+        #region Archive Project
         public async Task ArchiveProjectAsync(Project project)
         {
             try
@@ -117,8 +123,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Get Project Members By Role
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string roleName)
         {
             try
@@ -130,7 +137,7 @@ namespace JGBugTracker.Services
 
                 foreach (BTUser user in project!.Members)
                 {
-                    if (await _rolesService.IsUserInRoleAsync(user,roleName))
+                    if (await _rolesService.IsUserInRoleAsync(user, roleName))
                     {
                         members.Add(user);
                     }
@@ -143,6 +150,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
+
+        #region Get Users Not On Project
         public async Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
         {
             try
@@ -156,6 +166,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
+
+        #region Get All Project Members Except PM
         public async Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
         {
             try
@@ -174,8 +187,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Get Archived Projects By Company Id
         public async Task<List<Project>> GetArchivedProjectsByCompanyIdAsync(int companyId)
         {
             try
@@ -212,6 +226,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
+
+        #region Get All Projects By Company Id
         public async Task<List<Project>> GetAllProjectsByCompanyIdAsync(int companyId)
         {
             try
@@ -249,6 +266,9 @@ namespace JGBugTracker.Services
             //var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.Priority).Where(p => p.CompanyId == companyId);
             //return await applicationDbContext.ToListAsync();
         }
+        #endregion
+
+        #region Get Unassigned Projects
         public async Task<List<Project>> GetUnassignedProjectsAsync(int companyId)
         {
             List<Project> result = new();
@@ -266,13 +286,16 @@ namespace JGBugTracker.Services
                         result.Add(project);
                     }
                 }
-            return result;
+                return result;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        #endregion
+
+        #region Get User Projects
         public async Task<List<Project>> GetUserProjectsAsync(string userId)
         {
             try
@@ -308,8 +331,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Get Project By Id
         public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
             try
@@ -338,7 +362,10 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
+
+        #region Get Project Manager
         public async Task<BTUser> GetProjectManagerAsync(int projectId)
         {
             try
@@ -362,8 +389,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Is User On Project
         public async Task<bool> IsUserOnProjectAsync(string userId, int projectId)
         {
             try
@@ -385,7 +413,10 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
+
+        #region Remove Users From Project
         public async Task<bool> RemoveUserFromProjectAsync(string userId, int projectId)
         {
             try
@@ -414,8 +445,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Remove Project Manager
         public async Task RemoveProjectManagerAsync(int projectId)
         {
             try
@@ -437,6 +469,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
+
+        #region Restore Project
         public async Task RestoreProjectAsync(Project project)
         {
             try
@@ -457,9 +492,10 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
 
-
+        #region Update Project
         public async Task UpdateProjectAsync(Project project)
         {
             try
@@ -471,7 +507,8 @@ namespace JGBugTracker.Services
             {
                 throw;
             }
-        }
+        } 
+        #endregion
 
     }
 }

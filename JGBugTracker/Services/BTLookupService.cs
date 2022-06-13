@@ -83,5 +83,18 @@ namespace JGBugTracker.Services
         }
 
         #endregion    
+
+        public async Task<int?> LookupNotificationTypeIdAsync(string typeName)
+        {
+            try
+            {
+                NotificationType? notificationType = await _context.NotificationTypes.FirstOrDefaultAsync(n => n.Name == typeName);
+                return notificationType!.Id;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

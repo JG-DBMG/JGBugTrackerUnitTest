@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using JGBugTracker.Services.Interfaces;
 using JGBugTracker.Extensions;
 using JGBugTracker.Models.Enums;
+using JGBugTracker.Models.ViewModels;
 
 namespace JGBugTracker.Controllers
 {
@@ -23,18 +24,30 @@ namespace JGBugTracker.Controllers
         private readonly IBTTicketService _ticketService;
         private readonly IBTProjectService _projectService;
         private readonly IBTFileService _fileService;
+        private readonly IBTTicketHistoryService _ticketHistoryService;
+        private readonly IBTLookupService _lookupService;
+        private readonly IBTNotificationService _notificationService;
+        private readonly IBTRolesService _rolesService;
 
         public TicketsController(ApplicationDbContext context,
                                  UserManager<BTUser> userManager,
                                  IBTTicketService ticketService,
                                  IBTProjectService projectService,
-                                 IBTFileService fileService)
+                                 IBTFileService fileService,
+                                 IBTTicketHistoryService ticketHistoryService,
+                                 IBTLookupService lookupService,
+                                 IBTNotificationService notificationService,
+                                 IBTRolesService rolesService)
         {
             _context = context;
             _userManager = userManager;
             _ticketService = ticketService;
             _projectService = projectService;
             _fileService = fileService;
+            _ticketHistoryService = ticketHistoryService;
+            _lookupService = lookupService;
+            _notificationService = notificationService;
+            _rolesService = rolesService;
         }
 
         // GET: Tickets
@@ -46,6 +59,68 @@ namespace JGBugTracker.Controllers
             int companyId = User.Identity!.GetCompanyId();
             List<Ticket> tickets = await _ticketService.GetAllTicketsByCompanyIdAsync(companyId);
             return View(tickets);
+        }
+
+        public async Task<IActionResult> AssignDeveloper(int? ticketId)
+        {
+            if (ticketId == null)
+            {
+                return NotFound();
+            }
+            AssignDeveloperViewModel model = new();
+            int companyId = User.Identity!.GetCompanyId();
+
+            model.Ticket = await _ticketService.GetTicketByIdAsync(ticketId.Value);
+            model.Developers = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId), "Id", "FullName");
+
+            return View(model);
+            
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignDeveloper(AssignDeveloperViewModel model)
+        {
+            if (model.Ticket!.DeveloperUserId != null)
+            {
+                BTUser btUser = await _userManager.GetUserAsync(User);
+                //oldTicket
+                Ticket oldTicket = await _ticketService.GetTicketAsNoTrackingAsync(model.Ticket!.Id);
+                try
+                {
+                    await _ticketService.AssignTicketAsync(model.Ticket.Id, model.Ticket!.DeveloperUserId);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                //newTicket
+                Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(model.Ticket.Id);
+                // Add History
+                await _ticketHistoryService.AddHistoryAsync(oldTicket, newTicket, btUser.Id);
+                //Send Notifications
+                //Notify Developer
+                if (model.Ticket.DeveloperUserId != null)
+                {
+                    Notification devNotification = new()
+                    {
+                        TicketId = model.Ticket.Id,
+                        NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationTypes.Ticket))).Value,
+                        Title = "Ticket Updated",
+                        Message = $"Ticket: {model.Ticket.Title}, was updated by {btUser.FullName}",
+                        Created = DateTime.UtcNow,
+                        SenderId = btUser.Id,
+                        RecipientId = model.Ticket.DeveloperUserId
+                    };
+                    await _notificationService.AddNotificationAsync(devNotification);
+                    await _notificationService.SendEmailNotificationAsync(devNotification, "Ticket Updated");
+                }
+
+                return RedirectToAction(nameof(Details), new { id = model.Ticket?.Id });
+            }
+            return RedirectToAction(nameof(AssignDeveloper));
         }
 
 
@@ -132,6 +207,9 @@ namespace JGBugTracker.Controllers
 
                 await _ticketService.AddNewTicketAsync(ticket);
 
+                Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+                await _ticketHistoryService.AddHistoryAsync(null!, newTicket, ticket.SubmitterUserId);
+
                 return RedirectToAction(nameof(AllTickets));
             }
             int companyId = User.Identity!.GetCompanyId();
@@ -186,6 +264,9 @@ namespace JGBugTracker.Controllers
 
             if (ModelState.IsValid)
             {
+                string userId = _userManager.GetUserId(User);
+                Ticket? oldTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+
                 try
                 {
                     ticket.Created = DateTime.SpecifyKind(ticket.Created, DateTimeKind.Utc);
@@ -204,6 +285,12 @@ namespace JGBugTracker.Controllers
                         throw;
                     }
                 }
+
+                //TODO: Add History
+                Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+                await _ticketHistoryService.AddHistoryAsync(oldTicket, newTicket, userId);
+
+
                 return RedirectToAction(nameof(AllTickets));
             }
             

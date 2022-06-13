@@ -9,7 +9,7 @@ namespace JGBugTracker.Models
         public int Id { get; set; }
 
         public int? ProjectId { get; set; }
-        public int? ProjectTicket { get; set; }
+        public int? TicketId { get; set; }
 
         [Required]
         public string? Title { get; set; }
@@ -22,7 +22,7 @@ namespace JGBugTracker.Models
         public DateTime Created { get; set; }
 
         [Required]
-        public string? Sender { get; set; }
+        public string? SenderId { get; set; }
 
         [Required]
         public string? RecipientId { get; set; }
@@ -36,7 +36,7 @@ namespace JGBugTracker.Models
         public virtual NotificationType? NotificationType { get; set; }
         public virtual Ticket? Ticket { get; set; }
         public virtual Project? Project { get; set; }
-        public virtual BTUser? Invitor { get; set; }
-        public virtual BTUser? Invitee { get; set; }
+        public virtual BTUser? Sender { get; set; }
+        public virtual BTUser? Recipient { get; set; }
     }
 }

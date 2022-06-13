@@ -89,8 +89,8 @@ namespace JGBugTracker.Services
                     {
                         TicketId = newTicket.Id,
                         PropertyName = "TicketPriority",
-                        OldValue = oldTicket.TicketPriority.Name,
-                        NewValue = newTicket.TicketPriority.Name,
+                        OldValue = oldTicket.TicketPriority!.Name,
+                        NewValue = newTicket.TicketPriority!.Name,
                         Created = DateTime.UtcNow,
                         UserId = userId,
                         Description = $"New ticket priority: {newTicket.TicketPriority.Name}"
@@ -105,8 +105,8 @@ namespace JGBugTracker.Services
                     {
                         TicketId = newTicket.Id,
                         PropertyName = "TicketStatus",
-                        OldValue = oldTicket.TicketStatus.Name,
-                        NewValue = newTicket.TicketStatus.Name,
+                        OldValue = oldTicket.TicketStatus!.Name,
+                        NewValue = newTicket.TicketStatus!.Name,
                         Created = DateTime.UtcNow,
                         UserId = userId,
                         Description = $"New ticket Status: {newTicket.TicketStatus.Name}"
@@ -121,8 +121,8 @@ namespace JGBugTracker.Services
                     {
                         TicketId = newTicket.Id,
                         PropertyName = "TicketTypeId",
-                        OldValue = oldTicket.TicketType.Name,
-                        NewValue = newTicket.TicketType.Name,
+                        OldValue = oldTicket.TicketType!.Name,
+                        NewValue = newTicket.TicketType!.Name,
                         Created = DateTime.UtcNow,
                         UserId = userId,
                         Description = $"New ticket Type: {newTicket.TicketType.Name}"
@@ -141,7 +141,7 @@ namespace JGBugTracker.Services
                         NewValue = newTicket.DeveloperUser?.FullName,
                         Created = DateTime.UtcNow,
                         UserId = userId,
-                        Description = $"New ticket developer: {newTicket.DeveloperUser.FullName}"
+                        Description = $"New ticket developer: {newTicket.DeveloperUser!.FullName}"
 
                     };
                     await _context.TicketHistories.AddAsync(history);
@@ -206,7 +206,7 @@ namespace JGBugTracker.Services
                                                             .ThenInclude(p => p.Tickets)
                                                                 .ThenInclude(t => t.History)
                                                                     .ThenInclude(h => h.User)
-                                                        .FirstOrDefaultAsync(c => c.Id == companyId)).Projects.ToList();
+                                                        .FirstOrDefaultAsync(c => c.Id == companyId))!.Projects.ToList();
 
                 List<Ticket> tickets = projects.SelectMany(p => p.Tickets).ToList();
 

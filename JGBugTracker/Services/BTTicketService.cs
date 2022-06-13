@@ -21,6 +21,7 @@ namespace JGBugTracker.Services
             _projectService = projectService;
         }
 
+        #region Add New Ticket
         public async Task AddNewTicketAsync(Ticket ticket)
         {
             try
@@ -32,9 +33,10 @@ namespace JGBugTracker.Services
             {
                 throw;
             }
-        }
+        } 
+        #endregion
 
-
+        #region Add Ticket Attachment
         public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
         {
             try
@@ -49,7 +51,9 @@ namespace JGBugTracker.Services
             }
         }
 
+        #endregion
 
+        #region Archive Ticket
         public async Task ArchiveTicketAsync(Ticket ticket)
         {
             try
@@ -63,6 +67,51 @@ namespace JGBugTracker.Services
             }
         }
 
+        #endregion
+
+        public async Task AssignTicketAsync(int ticketId, string DeveloperId)
+        {
+            try
+            {
+                Ticket? ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
+
+                ticket.DeveloperUserId = DeveloperId;
+                ticket.Created = DateTime.SpecifyKind(ticket.Created, DateTimeKind.Utc);
+                ticket.Updated = DateTime.UtcNow;
+
+                await UpdateTicketAsync(ticket);
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        #region Get Tickets As No Tracking
+        public async Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId)
+        {
+            try
+            {
+                return await _context.Tickets
+                                     .Include(t => t.DeveloperUser)
+                                     .Include(t => t.Project)
+                                     .Include(t => t.TicketPriority)
+                                     .Include(t => t.TicketStatus)
+                                     .Include(t => t.TicketType)
+                                     .AsNoTracking()
+                                     .FirstOrDefaultAsync(t => t.Id == ticketId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Get All Tickets By Id
         public async Task<List<Ticket>> GetAllTicketsByIdAsync(int ticketId)
         {
             try
@@ -89,6 +138,9 @@ namespace JGBugTracker.Services
             }
         }
 
+        #endregion
+
+        #region Get All Archived Tickets By Company Id
         public async Task<List<Ticket>> GetAllArchivedTicketsByCompanyIdAsync(int companyId)
         {
             try
@@ -115,6 +167,9 @@ namespace JGBugTracker.Services
             }
         }
 
+        #endregion
+
+        #region Get Tickets By Company Id
         public async Task<List<Ticket>> GetAllTicketsByCompanyIdAsync(int companyId)
         {
             try
@@ -140,6 +195,7 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
         #region Get Tickets By User Id
         public async Task<List<Ticket>> GetTicketsByUserIdAsync(string userId, int companyId)
@@ -181,8 +237,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
-
+        #region Get Ticket Attachment By Id
         public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId)
         {
             try
@@ -197,11 +254,10 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
-
-
+        } 
         #endregion
 
+        #region Get Ticket By Id
         public async Task<Ticket> GetTicketByIdAsync(int ticketId)
         {
             try
@@ -227,7 +283,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Unassigned Tickets
         public async Task<List<Ticket>> GetUnassignedTicketsAsync(int companyId)
         {
             try
@@ -253,6 +311,9 @@ namespace JGBugTracker.Services
             }
         }
 
+        #endregion
+
+        #region Restore Ticket
         public async Task RestoreTicketAsync(Ticket ticket)
         {
             try
@@ -267,6 +328,9 @@ namespace JGBugTracker.Services
             }
         }
 
+        #endregion
+
+        #region Update Ticket
         public async Task UpdateTicketAsync(Ticket ticket)
         {
             try
@@ -279,5 +343,7 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+
+        #endregion    
     }
 }

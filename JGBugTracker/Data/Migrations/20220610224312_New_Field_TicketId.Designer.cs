@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JGBugTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220525161040_Initial")]
-    partial class Initial
+    [Migration("20220610224312_New_Field_TicketId")]
+    partial class New_Field_TicketId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -219,12 +219,6 @@ namespace JGBugTracker.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("InviteeId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("InvitorId")
-                        .HasColumnType("text");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
@@ -235,14 +229,11 @@ namespace JGBugTracker.Data.Migrations
                     b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TicketId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("RecipientId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Sender")
+                    b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -258,13 +249,13 @@ namespace JGBugTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InviteeId");
-
-                    b.HasIndex("InvitorId");
-
                     b.HasIndex("NotificationTypeId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
 
                     b.HasIndex("TicketId");
 
@@ -310,7 +301,7 @@ namespace JGBugTracker.Data.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ImageFileContentType")
@@ -330,7 +321,7 @@ namespace JGBugTracker.Data.Migrations
                     b.Property<int>("ProjectPriorityId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -780,14 +771,6 @@ namespace JGBugTracker.Data.Migrations
 
             modelBuilder.Entity("JGBugTracker.Models.Notification", b =>
                 {
-                    b.HasOne("JGBugTracker.Models.BTUser", "Invitee")
-                        .WithMany()
-                        .HasForeignKey("InviteeId");
-
-                    b.HasOne("JGBugTracker.Models.BTUser", "Invitor")
-                        .WithMany()
-                        .HasForeignKey("InvitorId");
-
                     b.HasOne("JGBugTracker.Models.NotificationType", "NotificationType")
                         .WithMany()
                         .HasForeignKey("NotificationTypeId")
@@ -798,17 +781,29 @@ namespace JGBugTracker.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ProjectId");
 
+                    b.HasOne("JGBugTracker.Models.BTUser", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JGBugTracker.Models.BTUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("JGBugTracker.Models.Ticket", "Ticket")
                         .WithMany("Notifications")
                         .HasForeignKey("TicketId");
 
-                    b.Navigation("Invitee");
-
-                    b.Navigation("Invitor");
-
                     b.Navigation("NotificationType");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
 
                     b.Navigation("Ticket");
                 });
@@ -821,7 +816,7 @@ namespace JGBugTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JGBugTracker.Models.ProjectPriority", "Priority")
+                    b.HasOne("JGBugTracker.Models.ProjectPriority", "ProjectPriority")
                         .WithMany()
                         .HasForeignKey("ProjectPriorityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -829,7 +824,7 @@ namespace JGBugTracker.Data.Migrations
 
                     b.Navigation("Company");
 
-                    b.Navigation("Priority");
+                    b.Navigation("ProjectPriority");
                 });
 
             modelBuilder.Entity("JGBugTracker.Models.Ticket", b =>

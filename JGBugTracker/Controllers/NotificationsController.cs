@@ -59,7 +59,7 @@ namespace JGBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProjectId,ProjectTicket,Title,Message,Created,Sender,RecipientId,NotificationTypeId,Viewed")] Notification notification)
+        public async Task<IActionResult> Create([Bind("Id,ProjectId,TicketId,Title,Message,Created,Sender,RecipientId,NotificationTypeId,Viewed")] Notification notification)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace JGBugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ProjectId,ProjectTicket,Title,Message,Created,Sender,RecipientId,NotificationTypeId,Viewed")] Notification notification)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProjectId,TicketId,Title,Message,Created,Sender,RecipientId,NotificationTypeId,Viewed")] Notification notification)
         {
             if (id != notification.Id)
             {

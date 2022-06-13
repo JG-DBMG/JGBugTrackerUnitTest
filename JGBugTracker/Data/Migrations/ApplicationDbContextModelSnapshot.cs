@@ -217,12 +217,6 @@ namespace JGBugTracker.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("InviteeId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("InvitorId")
-                        .HasColumnType("text");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
@@ -233,14 +227,11 @@ namespace JGBugTracker.Data.Migrations
                     b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ProjectTicket")
-                        .HasColumnType("integer");
-
                     b.Property<string>("RecipientId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Sender")
+                    b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -256,13 +247,13 @@ namespace JGBugTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InviteeId");
-
-                    b.HasIndex("InvitorId");
-
                     b.HasIndex("NotificationTypeId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
 
                     b.HasIndex("TicketId");
 
@@ -778,14 +769,6 @@ namespace JGBugTracker.Data.Migrations
 
             modelBuilder.Entity("JGBugTracker.Models.Notification", b =>
                 {
-                    b.HasOne("JGBugTracker.Models.BTUser", "Invitee")
-                        .WithMany()
-                        .HasForeignKey("InviteeId");
-
-                    b.HasOne("JGBugTracker.Models.BTUser", "Invitor")
-                        .WithMany()
-                        .HasForeignKey("InvitorId");
-
                     b.HasOne("JGBugTracker.Models.NotificationType", "NotificationType")
                         .WithMany()
                         .HasForeignKey("NotificationTypeId")
@@ -796,17 +779,29 @@ namespace JGBugTracker.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ProjectId");
 
+                    b.HasOne("JGBugTracker.Models.BTUser", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JGBugTracker.Models.BTUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("JGBugTracker.Models.Ticket", "Ticket")
                         .WithMany("Notifications")
                         .HasForeignKey("TicketId");
 
-                    b.Navigation("Invitee");
-
-                    b.Navigation("Invitor");
-
                     b.Navigation("NotificationType");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
 
                     b.Navigation("Ticket");
                 });
