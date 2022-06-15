@@ -295,7 +295,7 @@ namespace JGBugTracker.Services
                                                  .SelectMany(t => t.Tickets.Where(t => t.Archived == false))
                                                     .Include(t => t.Attachments)
                                                     .Include(t => t.Comments)
-                                                    .Include(t => t.DeveloperUser!.Id == null)
+                                                    .Include(t => t.DeveloperUser)
                                                     .Include(t => t.History)
                                                     .Include(t => t.SubmitterUser)
                                                     .Include(t => t.TicketPriority)

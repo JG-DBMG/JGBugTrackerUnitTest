@@ -2,11 +2,80 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = "/Views/Shared/_RegisterLayout.cshtml";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="row">
+<div class="logo text-center">
+                        <span class="db"><img src="~/assets/images/logos/logo-icon.png" alt="logo" /></span>
+                        <h5 class="font-weight-medium mb-3 mt-1"></h5>
+                    </div>
+                    <!-- Form -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.FirstName" class="form-control form-input-bg" placeholder="john deo" required>
+                                        <label for="tb-rfname">First Name</label>
+                                        <div class="invalid-feedback">
+                                          First name is required
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.LastName" class="form-control form-input-bg" placeholder="john deo" required>
+                                        <label for="tb-rfname">Last Name</label>
+                                        <div class="invalid-feedback">
+                                          Last name is required
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.CompanyName" class="form-control form-input-bg" placeholder="john deo" required>
+                                        <label for="tb-rfname">Company Name</label>
+                                        <div class="invalid-feedback">
+                                          Company name is required
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.CompanyDescription" class="form-control form-input-bg" placeholder="john deo" required>
+                                        <label for="tb-rfname">Company Description</label>
+                                        <div class="invalid-feedback">
+                                          Company description is required
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.Email" class="form-control form-input-bg" placeholder="john@gmail.com" required>
+                                        <label for="tb-remail">Email</label>
+                                        <div class="invalid-feedback">
+                                          Email is required
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.Password" class="form-control form-input-bg" placeholder="*****" required>
+                                        <label for="text-rpassword">Password</label>
+                                        <div class="invalid-feedback">
+                                          Password is required
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input asp-for="Input.ConfirmPassword" class="form-control form-input-bg" placeholder="*****" required>
+                                        <label for="text-rcpassword">Confirm Password</label>
+                                        <div class="invalid-feedback">
+                                          Password is required
+                                        </div>
+                                    </div>
+                                    <div class="checkbox checkbox-primary mb-3">
+                                          <input id="checkbox-signup" type="checkbox" class="chk-col-indigo material-inputs">
+                                          <label for="checkbox-signup"> I agree to all <a href="#">Terms</a></label>
+                                        </div>
+                                    <div class="d-flex align-items-stretch">
+                                        <button type="submit" class="btn btn-info d-block w-100">Sign up</button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+
+@*<div class="row">
     <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2>Create a new account.</h2>
@@ -65,3 +134,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+*@

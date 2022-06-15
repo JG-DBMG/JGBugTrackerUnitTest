@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
-@{ 
+@{
     BTUser btUser = await UserManager.GetUserAsync(User);
 }
 

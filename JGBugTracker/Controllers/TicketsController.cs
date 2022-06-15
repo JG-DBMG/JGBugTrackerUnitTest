@@ -61,16 +61,16 @@ namespace JGBugTracker.Controllers
             return View(tickets);
         }
 
-        public async Task<IActionResult> AssignDeveloper(int? ticketId)
+        public async Task<IActionResult> AssignDeveloper(int? id)
         {
-            if (ticketId == null)
+            if (id == null)
             {
                 return NotFound();
             }
             AssignDeveloperViewModel model = new();
             int companyId = User.Identity!.GetCompanyId();
 
-            model.Ticket = await _ticketService.GetTicketByIdAsync(ticketId.Value);
+            model.Ticket = await _ticketService.GetTicketByIdAsync(id.Value);
             model.Developers = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId), "Id", "FullName");
 
             return View(model);
