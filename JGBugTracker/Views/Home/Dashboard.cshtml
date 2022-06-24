@@ -12,94 +12,192 @@
     BTUser btUser = await UserManager.GetUserAsync(User);
 }
 
-<h1>Dashboard</h1>
+<h1>Company Dashboard</h1>
 <a href="javascript:void(0);">
-    @* User Info *@
-    [Code: Copy from Ticket/Details]
 </a>
 @* Get The btUser FullName *@
 <strong>@btUser.FullName</strong>
 <span class="text-muted" style="font-size:x-small;">
     @* Company Name *@
-    <strong>@btUser.Company</strong>
+    <strong>@Model.Company!.Name</strong>
 </span>
 
 
-<div>
-    <div classxfont-weighteighteightgetainer-fluid">
-        <div class="row gy-2">
-            <div class="col-md-12 col">
-                <div class="row col-cols-4 mt-5 bg-secondary">
-                    <div class="card col m-1 p-2">
-                        <div class="card-body">
-                            <h5>Chart 1</h5>
-                            <p>@Model.Projects</p>
+<div class="page-content container-fluid">
+    <div class="row mt-2">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <a asp-action="AllProjects" asp-controller="Projects" style="text-decoration:none">
+                <div class="card text-center bg-info rounded">
+                    <div class="body">
+                        <div class="p-15 text-light">
+                            <h3>@Model.Projects!.Where(p => p.StartDate < DateTime.Now && p.EndDate > DateTime.Now).Count()</h3>
+                            <span>Active Projects</span>
                         </div>
                     </div>
-                    <div class="card col m-1 p-2">
-                        <div class="card-body">
-                            <h5>Chart 2</h5>
-                            <p>[Projects]</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <a asp-action="AllTickets" asp-controller="Tickets" style="text-decoration:none">
+                <div class="card text-center bg-danger rounded">
+                    <div class="body">
+                        <div class="p-15 text-light">
+
+                            <h3>@Model.Tickets!.Count()</h3>
+                            <span>Total Tickets</span>
                         </div>
                     </div>
-                    <div class="card col m-1 p-2">
-                        <div class="card-body">
-                            <h5>Chart 3</h5>
-                            <p>@Model.Tickets</p>
-                        </div>
-                    </div>
-                    <div class="card col m-1 p-2">
-                        <div class="card-body">
-                            <h5>Chart 4</h5>
-                            <p>[Tickets]</p>
-                        </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card text-center bg-warning rounded">
+                <div class="body">
+                    <div class="p-15 text-light">
+                        <h3>@Model.Tickets!.Where(t => string.IsNullOrEmpty(t.DeveloperUserId)).Count()</h3>
+                        <span>Unassigned Tickets</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row gy-2">
-            <div class="cols mt-5 bg-secondary">
-                <div class="card col m-1 p-2">
-                    <div class="card-body" style="height:380px">
-                        <h5>Chart 5</h5>
-                        <p>[Projects: Tickets vs Developers]</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card text-center bg-dark rounded">
+                <div class="body">
+                    <div class="p-15 text-light">
+                        <h3>
+                            @(
+                            Model.Projects!.Count()
+                            + Model.Tickets!.Count()
+                            + Model.Members!.Count()
+                            )
+                        </h3>
+                        <span>Total Data</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @*<div class="row">
+    <div class="col-md-12 col-lg-4">
+    <div class="card">
+    <div class="card-body bg-info">
+    <div class="row">
+    <div class="col-7">
+    <h2 class="font-weight-medium">Projects</h2>
+    <h5 class="text-white fw-normal mb-0">Total Projects</h5>
+    </div>
+    <div class="col-5">
+    <h2 class="font-weight-medium">@Model.Projects!.Count</h2>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+    <div class="card">
+    <div class="card-body bg-danger">
+    <div class="row">
+    <div class="col-7">
+    <h2 class="font-weight-medium">Tickets</h2>
+    <h5 class="text-white fw-normal mb-0">Total Tickets</h5>
+    </div>
+    <div class="col-5">
+    <h2 class="font-weight-medium">@Model.Tickets!.Count</h2>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+    <div class="card">
+    <div class="card-body bg-info">
+    <div class="row">
+    <div class="col-6">
+    <h2 class="font-weight-medium">Members</h2>
+    <h5 class="text-white fw-normal mb-0">Total Members</h5>
+    </div>
+    <div class="col-6">
+    <h2 class="font-weight-medium">@Model.Members!.Count</h2>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>*@
+    <div class="row gy-2">
+        <div class="cols mt-5 bg-dark rounded">
+            <div class="card col m-1 p-2 rounded">
+                <div class="card-body" style="height:600px;overflow-y:auto;">
+                    <h5>Project: Tickets vs Developers</h5>
+                    <p>[Plotly]</p>
+                    <!-- HTML -->
+                    <div id="plotlyChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <hr />
-    <div class="mt-5 ">
-        <div class="row">
-            @* Projects Table *@
-            <div class="col">
-                <div class="bg-secondary">
-                    <div class="card m-1 p-2">
-                        <div class="card-header">
-                            <h2>Projects</h2>
-                        </div>
-                        <div class="card-body">
-                            @* [Copy and format table from Unassigned Tickets] *@
-                        </div>
-                        <div class="card-footer">
-                        </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card rounded">
+                <div class="border-bottom title-part-padding">
+                    <h4 class="card-title mb-0">All Projects</h4>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3">
+                        Projects
+                    </h6>
+                    <div class="table-responsive">
+                        <table id="scroll_ver" class="table table-striped table-bordered display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Tickets</strong></th>
+                                    <th><strong>Members</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Project item in @Model.Projects)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Tickets.Count</td>
+                                        <td>@item.Members.Count</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            @* Tickets Table *@
-            <div class="col">
-                <div class="bg-secondary">
-                    <div class="card m-1 p-2">
-                        <div class="card-header">
-                            <h2>Tickets</h2>
-                        </div>
-                        <div class="card-body">
-                            @* Copy and format table from Unassigned Tickets *@
+        </div>
+        @* Tickets Table *@
+        <div class="col-md-5">
+            <div class="card rounded">
+                <div class="border-bottom title-part-padding">
+                    <h4 class="card-title mb-0">All Tickets</h4>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3">
+                        Tickets
+                    </h6>
+                    <div class="table-responsive">
+                        <table id="scroll_ver_dynamic_hei" class="table table-striped table-bordered display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Developer</strong></th>
+                                    <th><strong>Status</strong></th>
+                                    <th><strong>Created</strong></th>
+                                    <th><strong>Details</strong></th>
+                                </tr>
+                            </thead>
                             @foreach (var ticket in Model.Tickets!.OrderByDescending(d => d.Created))
                             {
-                                <table>
+                                <tbody>
                                     <tr>
-                                        <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
+                                        <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a></td>
                                         <td>
                                             @if (ticket.DeveloperUserId != null)
                                             {
@@ -109,7 +207,7 @@
                                             {
                                                 if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                                 {
-                                                    <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                                    <a class="btn btn-sm btn-outline-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
                                                 }
                                             }
                                         </td>
@@ -121,39 +219,87 @@
                                         {
                                             <td><span class="badge-primary">@ticket.TicketStatus.Name </span></td>
                                         }
-                                        <td><span class="badge">@ticket.TicketPriority!.Name </span></td>
                                         <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                         <td>
-                                            <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
+                                            <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">Details</a>
                                         </td>
                                     </tr>
-                                </table>
+                                </tbody>
                             }
-                        </div>
-                        <div class="card-footer">
-                        </div>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2 ">
-                <div class="bg-dark">
-                    <div class="card m-1 p-2">
-                        <div class="card-header">
-                            <h2>Members</h2>
-                            <hr />
-                        </div>
-                        <div class="card-body" style="overflow-y:auto;height:600px;background-color:antiquewhite">
-                            @* Loop over Company members. Display Name and Role *@
-                            <ul class="right_chat list-unstyled mb-0">
-                            @foreach (BTUser member in Model.Members!)
+        </div>
+        <div class="col-md-3">
+            <div class="card rounded">
+                <div class="border-bottom title-part-padding">
+                    <h4 class="card-title mb-0">All Members</h4>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3">
+                        All Members for Company
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                                @foreach (BTUser member in Model.Members!)
                                 {
-                                    <li>@(await _rolesService.GetUserRoleAsync(member)): @member.FullName</li>
+                                    <tr>
+                                        @if (member.AvatarFormFile == null)
+                                        {
+                                            <td style="width:40px"><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" width="50" class="rounded-circle" alt="logo"></td>
+                                        }
+                                        else
+                                        {
+                                            <td style="width:40px"><img src="@member.AvatarFormFile" width="50" class="rounded-circle" alt="logo"></td>
+                                        }
+                                        <td><h4 class="mb-0 fw-normal">@member.FullName</h4></td>
+                                        <td class="text-end"><span class="badge py-1 rounded text-info bg-light-info">@(await _rolesService.GetUserRoleAsync(member))</span></td>
+                                    </tr>
                                 }
-                            </ul>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="~/dist/js/pages/datatable/datatable-basic.init.js"></script>
+    <script src="~/assets/libs/raphael/raphael.min.js"></script>
+    <script src="~/assets/libs/morris.js/morris.min.js"></script>
+    <script src="~/dist/js/pages/morris/morris-data.js"></script>
+
+    <!--  Plotly Charts  -->
+    <!-- Load plotly.js into the DOM -->
+    <script src='https://cdn.plot.ly/plotly-2.4.2.min.js'></script>
+    <script>
+        $.ajax({
+            type: "POST",
+            url: "/Home/PlotlyBarChart",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(result) {
+                var data = result;
+
+                var layout = { barmode: 'group' };
+
+                Plotly.newPlot('plotlyChart', data, layout);
+            },
+            failure: function(result) {
+                alert(result.d);
+            },
+            error: function(result) {
+                alert(result.d);
+            }
+        });
+    </script>
+    }

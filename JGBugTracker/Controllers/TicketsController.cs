@@ -215,6 +215,28 @@ namespace JGBugTracker.Controllers
             int companyId = User.Identity!.GetCompanyId();
             string userId = _userManager.GetUserId(User);
 
+            //BTUser projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+            //Notification notification = new()
+            //{
+            //    NotificationTypeId = (await _lookupService.LookupNotificationTypeId(nameof(BTNotificationType.Ticket))).Value,
+            //    TicketId = ticket.Id,
+            //    Title = "New Ticket Added",
+            //    Message = $"New Ticket: {ticket.Title}, was created by {btUser.FullName}",
+            //    Created = DateTime.UtcNow,
+            //    SenderId = userId,
+            //    RecipientId = projectManager?.Id
+            //};
+
+            //await _notificationService.AddNotificationAsync(notification);
+            //if (projectManager != null)
+            //{
+            //    await _notificationService.SendEmailNotificationAsync(notification, $"New Ticket Added For Project: {newTicket.Project.Name}");
+            //}
+            //else
+            //{
+            //    await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRoles.Admin));
+            //}
+
             if (User.IsInRole(nameof(BTRoles.Admin)))
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyIdAsync(companyId), "Id", "Name");

@@ -21,6 +21,7 @@ namespace JGBugTracker.Services
             _rolesService = rolesService;
         }
 
+        #region Add Notification
         public async Task AddNotificationAsync(Notification notification)
         {
             try
@@ -34,7 +35,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Recieved Notifications
         public async Task<List<Notification>> GetReceivedNotificationsAsync(string userId)
         {
             try
@@ -53,7 +56,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Sent Notifications
         public async Task<List<Notification>> GetSentNotificationsAsync(string userId)
         {
             try
@@ -72,15 +77,17 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Send Email Notification
         public async Task<bool> SendEmailNotificationAsync(Notification notification, string emailSubject)
         {
             try
             {
-                BTUser btUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == notification.RecipientId);
+                BTUser? btUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == notification.RecipientId);
 
-                string btUserEmail = btUser.Email;
-                string message = notification.Message;
+                string? btUserEmail = btUser!.Email;
+                string? message = notification.Message;
 
                 //Send Email
                 try
@@ -102,7 +109,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Send Email Notifications By Role
         public async Task SendEmailNotificationsByRoleAsync(Notification notification, int companyId, string role)
         {
             try
@@ -121,7 +130,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Send Members Email Notifications
         public async Task SendMembersEmailNotificationsAsync(Notification notification, List<BTUser> members)
         {
             try
@@ -129,7 +140,7 @@ namespace JGBugTracker.Services
                 foreach (BTUser btUser in members)
                 {
                     notification.RecipientId = btUser.Id;
-                    await SendEmailNotificationAsync(notification, notification.Title);
+                    await SendEmailNotificationAsync(notification, notification.Title!);
                 }
             }
             catch (Exception)
@@ -137,6 +148,7 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
     }
 }

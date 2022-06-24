@@ -14,6 +14,7 @@ namespace JGBugTracker.Services
             _context = context;
         }
 
+        #region Get All Members
         public async Task<List<BTUser>> GetAllMembersAsync(int companyId)
         {
             try
@@ -28,7 +29,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Company Info By Id
         public async Task<Company> GetCompanyInfoById(int? companyId)
         {
             try
@@ -50,6 +53,7 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
     }
 }

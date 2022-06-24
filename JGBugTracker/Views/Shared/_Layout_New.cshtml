@@ -1,6 +1,12 @@
 ﻿@using JGBugTracker.Models.Enums
 @using Microsoft.AspNetCore.Identity
+
 @inject SignInManager<BTUser> SignInManager
+@inject UserManager<BTUser> UserManager
+
+@{
+    BTUser btUser = await UserManager.GetUserAsync(User);
+}
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -20,6 +26,9 @@
     <!-- This Page CSS -->
     <link rel="stylesheet" href="~/assets/libs/apexcharts/dist/apexcharts.css">
     <link href="~/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
+    <link href="~/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/assets/extra-libs/datatables.net-bs4/css/responsive.dataTables.min.css">
+    <link href="~/assets/libs/morris.js/morris.css" rel="stylesheet">
     <!-- needed css -->
     <link href="~/dist/css/style.min.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -60,17 +69,17 @@
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="../assets/images/logos/logo-icon.png" alt="homepage" class="dark-logo" />
+                            <img src="~/assets/images/logos/logo-icon.png" alt="homepage" class="dark-logo" />
                             <!-- Light Logo icon -->
-                            <img src="../assets/images/logos/logo-light-icon.png" alt="homepage" class="light-logo" />
+                            <img src="~/assets/images/logos/logo-light-icon.png" alt="homepage" class="light-logo" />
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
                         <span class="logo-text">
                             <!-- dark Logo text -->
-                            <img src="../assets/images/logos/logo-text.png" alt="homepage" class="dark-logo" />
+                            <img src="~/assets/images/logos/logo-text.png" alt="homepage" class="dark-logo" />
                             <!-- Light Logo text -->
-                            <img src="../assets/images/logos/logo-light-text.png" class="light-logo" alt="homepage" />
+                            <img src="~/assets/images/logos/logo-light-text.png" class="light-logo" alt="homepage" />
                         </span>
                     </a>
                     <!-- ============================================================== -->
@@ -84,18 +93,67 @@
                 <!-- ============================================================== -->
                 <!-- End Logo -->
                 <!-- ============================================================== -->
-                <div class="navbar-collapse collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav justify-content-center">
+                <div class="navbar-collapse collapse justify-content-end" id="navbarSupportedContent">
                     <!-- ============================================================== -->
-                    <!-- Search -->
+                    <!-- toggle and nav items -->
                     <!-- ============================================================== -->
-                    <li class="nav-item search-box">
-                        <form class="app-search d-none d-lg-block d-flex">
-                            <input type="text" class="form-control me-2" placeholder="Search...">
-                            <a href="" class="active"><i class="fa fa-search"></i></a>
-                        </form>
-                    </li>
-                </ul>
+                    <ul class="navbar-nav">
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                        <li class="nav-item dropdown">
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36">
+                                    <span class="ms-2 font-weight-medium">@btUser.FirstName</span><span class="fas fa-angle-down ms-2"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
+                                    <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
+                                        <div><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60"></div>
+                                        <div class="ms-2">
+                                            <h4 class="mb-0 text-white">@btUser.FullName</h4>
+                                            <p class="mb-0">@btUser.Email</p>
+                                        </div>
+                                    </div>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My Profile
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit();">
+                                        <i data-feather="log-out"
+                                       class="feather-sm text-danger me-1 ms-1"></i> Logout
+                                    </a>
+                                </div>
+                                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+                                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                </form>
+                            }
+                            else
+                            {
+                                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class=""><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36"></div>
+                                    <span class="ms-2 font-weight-medium">Log In</span><span class="fas fa-angle-down ms-2"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
+                                    <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
+                                        <div><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60"></div>
+                                    </div>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
+                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> Register
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">
+                                        <i data-feather="log-In"
+                                       class="feather-sm text-danger me-1 ms-1"></i> Sign In
+                                    </a>
+                                </div>
+                            }
+                        </li>
+                        <!-- ============================================================== -->
+                        <!-- User profile and search -->
+                        <!-- ============================================================== -->
+                    </ul>
                 </div>
             </nav>
         </header>
@@ -111,111 +169,121 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        <li class="sidebar-item">
-                            <ul>
-                                <partial name="_LoginPartial" />
-                            </ul>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-                                <i class="mdi mdi-av-timer"></i>
-                                <span class="hide-menu">Dashboard</span>
-                                <span class="badge bg-inverse rounded-pill ms-auto me-3 font-weight-medium px-2 py-1"></span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse  first-level">
-                                <li class="sidebar-item">
-                                    <a asp-controller="Home" asp-action="Dashboard" class="sidebar-link">
-                                        <i class="mdi mdi-adjust"></i>
-                                        <span class="hide-menu">My Dashboard </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <div class="devider"></div>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-                                <i class="mdi mdi-content-copy"></i>
-                                <span class="hide-menu">Projects</span>
-                                <span class="badge bg-warning text-white rounded-pill ms-auto me-3 font-weight-medium px-2 py-1"></span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse first-level">
-                                <li class="sidebar-item">
-                                    <a asp-controller="Projects" asp-action="Create" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">New Project</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Projects" asp-action="MyProjects" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">My Projects</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Projects" asp-action="AllProjects" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">All Projects</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Projects" asp-action="UnassignedProjects" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">Unassigned Projects</span>
-                                    </a>
-                                </li>
-                                @if (User.IsInRole(nameof(BTRoles.Admin)))
-                                {
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-controller="Home" asp-action="Dashboard" aria-expanded="false">
+                                    <i class="mdi mdi-av-timer"></i>
+                                    <span class="hide-menu">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-controller="Companies" asp-action="Index" aria-expanded="false">
+                                    <i class="mdi mdi-city"></i>
+                                    <span class="hide-menu">Companies</span>
+                                </a>
+                            </li>
+                            <div class="divider"></div>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                                    <i class="mdi mdi-folder-multiple-image"></i>
+                                    <span class="hide-menu">Projects</span>
+                                    <span class="badge bg-warning text-white rounded-pill ms-auto me-3 font-weight-medium px-2 py-1"></span>
+                                </a>
+                                <ul aria-expanded="false" class="collapse first-level">
+                                    @if (User.IsInRole(nameof(BTRoles.Admin)))
+                                    {
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Projects" asp-action="Create" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">New Project</span>
+                                            </a>
+                                        </li>
+                                    }
                                     <li class="sidebar-item">
-                                        <a asp-controller="Projects" asp-action="ArchivedProjects" class="sidebar-link">
+                                        <a asp-controller="Projects" asp-action="MyProjects" class="sidebar-link">
                                             <i class="mdi mdi-crop-free"></i>
-                                            <span class="hide-menu">Archived Projects</span>
+                                            <span class="hide-menu">My Projects</span>
                                         </a>
                                     </li>
-                                }
-                            </ul>
-                        </li>
+                                    <li class="sidebar-item">
+                                        <a asp-controller="Projects" asp-action="AllProjects" class="sidebar-link">
+                                            <i class="mdi mdi-crop-free"></i>
+                                            <span class="hide-menu">All Projects</span>
+                                        </a>
+                                    </li>
+                                    @if (User.IsInRole(nameof(BTRoles.Admin)))
+                                    {
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Projects" asp-action="UnassignedProjects" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">Unassigned Projects</span>
+                                            </a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Projects" asp-action="ArchivedProjects" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">Archived Projects</span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
 
-                        <li class="sidebar-item">
-                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-                                <i class="mdi mdi-clipboard-text"></i>
-                                <span class="hide-menu">Tickets</span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse first-level">
-                                <li class="sidebar-item">
-                                    <a asp-controller="Tickets" asp-action="Create" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">New Ticket</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Tickets" asp-action="MyTickets" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">My Tickets</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Tickets" asp-action="AllTickets" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">All Tickets</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a asp-controller="Tickets" asp-action="UnassignedTickets" class="sidebar-link">
-                                        <i class="mdi mdi-crop-free"></i>
-                                        <span class="hide-menu">Unassigned Tickets</span>
-                                    </a>
-                                </li>
-                                @if (User.IsInRole(nameof(BTRoles.Admin)))
-                                {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                                    <i class="mdi mdi-clipboard-text"></i>
+                                    <span class="hide-menu">Tickets</span>
+                                </a>
+                                <ul aria-expanded="false" class="collapse first-level">
+                                    @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)) || User.IsInRole(nameof(BTRoles.Submitter)))
+                                    {
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Tickets" asp-action="Create" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">New Ticket</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Tickets" asp-action="MyTickets" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">My Tickets</span>
+                                            </a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Tickets" asp-action="AllTickets" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">All Tickets</span>
+                                            </a>
+                                        </li>
+                                    }
                                     <li class="sidebar-item">
-                                        <a asp-controller="Tickets" asp-action="ArchivedTickets" class="sidebar-link">
+                                        <a asp-controller="Tickets" asp-action="UnassignedTickets" class="sidebar-link">
                                             <i class="mdi mdi-crop-free"></i>
-                                            <span class="hide-menu">Archived Tickets</span>
+                                            <span class="hide-menu">Unassigned Tickets</span>
                                         </a>
                                     </li>
-                                }
-                            </ul>
-                        </li>
+                                    @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+                                    {
+                                        <li class="sidebar-item">
+                                            <a asp-controller="Tickets" asp-action="ArchivedTickets" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">Archived Tickets</span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-controller="Notifications" asp-action="Index" aria-expanded="false">
+                                    <i class="mdi mdi-bell"></i>
+                                    <span class="hide-menu">Notifications</span>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -242,7 +310,7 @@
             <!-- footer -->
             <!-- ============================================================== -->
             <footer class="footer text-center">
-                All Rights Reserved by Ample admin.
+                &copy; 2022 - BugTracker -
             </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
@@ -265,16 +333,6 @@
                 <li class="nav-item">
                     <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home" role="tab"
                        aria-controls="pills-home" aria-selected="true"><i class="mdi mdi-wrench fs-6"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#chat" role="tab"
-                       aria-controls="chat" aria-selected="false"><i class="mdi mdi-message-reply fs-6"></i></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-contact" role="tab"
-                       aria-controls="pills-contact" aria-selected="false">
-                        <i class="mdi mdi-star-circle fs-6"></i>
-                    </a>
                 </li>
             </ul>
             <div class="tab-content" id="pills-tabContent">
@@ -401,258 +459,6 @@
                     </div>
                 </div>
                 <!-- End Tab 1 -->
-                <!-- Tab 2 -->
-                <div class="tab-pane fade" id="chat" role="tabpanel" aria-labelledby="pills-profile-tab">
-                    <ul class="mailbox list-style-none mt-3">
-                        <li>
-                            <div class="message-center chat-scroll position-relative">
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_1' data-user-id='1'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/1.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle online"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Pavan kumar</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            Just see the my
-                                            admin!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:30
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_2' data-user-id='2'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/2.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle busy"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Sonu Nigam</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            I've sung a
-                                            song! See you at
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">9:10 AM</span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_3' data-user-id='3'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/3.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle away"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Arijit Sinh</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            I am a
-                                            singer!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:08
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_4' data-user-id='4'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/4.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle offline"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Nirav Joshi</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            Just see the my
-                                            admin!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:02
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_5' data-user-id='5'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/5.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle offline"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Sunil Joshi</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            Just see the my
-                                            admin!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:02
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_6' data-user-id='6'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/6.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle offline"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Akshay Kumar</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            Just see the my
-                                            admin!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:02
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_7' data-user-id='7'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/7.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle offline"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Pavan kumar</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            Just see the my
-                                            admin!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:02
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                                <!-- Message -->
-                                <a href="javascript:void(0)"
-                                   class="message-item d-flex align-items-center border-bottom px-3 py-2"
-                                   id='chat_user_8' data-user-id='8'>
-                                    <span class="user-img position-relative d-inline-block">
-                                        <img src="../assets/images/users/8.jpg" alt="user" class="rounded-circle w-100">
-                                        <span class="profile-status rounded-circle offline"></span>
-                                    </span>
-                                    <div class="w-75 d-inline-block v-middle ps-3">
-                                        <h5 class="message-title mb-0 mt-1">Varun Dhavan</h5> <span class="fs-2 text-nowrap d-block text-muted text-truncate">
-                                            Just see the my
-                                            admin!
-                                        </span> <span class="fs-2 text-nowrap d-block text-muted">
-                                            9:02
-                                            AM
-                                        </span>
-                                    </div>
-                                </a>
-                                <!-- Message -->
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <!-- End Tab 2 -->
-                <!-- Tab 3 -->
-                <div class="tab-pane fade p-3" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-                    <h6 class="mt-3 mb-3">Activity Timeline</h6>
-                    <div class="steamline">
-                        <div class="sl-item">
-                            <div class="sl-left bg-light-success text-success">
-                                <i data-feather="user" class="feather-sm fill-white"></i>
-                            </div>
-                            <div class="sl-right">
-                                <div class="font-weight-medium">Meeting today <span class="sl-date"> 5pm</span></div>
-                                <div class="desc">you can write anything </div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left bg-light-info text-info">
-                                <i data-feather="camera" class="feather-sm fill-white"></i>
-                            </div>
-                            <div class="sl-right">
-                                <div class="font-weight-medium">Send documents to Clark</div>
-                                <div class="desc">Lorem Ipsum is simply </div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left">
-                                <img class="rounded-circle" alt="user"
-                                     src="../assets/images/users/2.jpg">
-                            </div>
-                            <div class="sl-right">
-                                <div class="font-weight-medium">
-                                    Go to the Doctor <span class="sl-date">
-                                        5 minutes
-                                        ago
-                                    </span>
-                                </div>
-                                <div class="desc">Contrary to popular belief</div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left">
-                                <img class="rounded-circle" alt="user"
-                                     src="../assets/images/users/1.jpg">
-                            </div>
-                            <div class="sl-right">
-                                <div>
-                                    <a href="javascript:void(0)">Stephen</a> <span class="sl-date">5 minutes ago</span>
-                                </div>
-                                <div class="desc">Approve meeting with tiger</div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left bg-light-primary text-primary">
-                                <i data-feather="user" class="feather-sm fill-white"></i>
-                            </div>
-                            <div class="sl-right">
-                                <div class="font-weight-medium">Meeting today <span class="sl-date"> 5pm</span></div>
-                                <div class="desc">you can write anything </div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left bg-light-info text-info">
-                                <i data-feather="send" class="feather-sm fill-white"></i>
-                            </div>
-                            <div class="sl-right">
-                                <div class="font-weight-medium">Send documents to Clark</div>
-                                <div class="desc">Lorem Ipsum is simply </div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left">
-                                <img class="rounded-circle" alt="user"
-                                     src="../assets/images/users/4.jpg">
-                            </div>
-                            <div class="sl-right">
-                                <div class="font-weight-medium">
-                                    Go to the Doctor <span class="sl-date">
-                                        5 minutes
-                                        ago
-                                    </span>
-                                </div>
-                                <div class="desc">Contrary to popular belief</div>
-                            </div>
-                        </div>
-                        <div class="sl-item">
-                            <div class="sl-left">
-                                <img class="rounded-circle" alt="user"
-                                     src="../assets/images/users/6.jpg">
-                            </div>
-                            <div class="sl-right">
-                                <div>
-                                    <a href="javascript:void(0)">Stephen</a> <span class="sl-date">5 minutes ago</span>
-                                </div>
-                                <div class="desc">Approve meeting with tiger</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Tab 3 -->
             </div>
         </div>
     </aside>
@@ -686,7 +492,7 @@
     <script src="~/assets/extra-libs/jvector/jquery-jvectormap-uk-mill-en.js"></script>
     <script src="~/assets/extra-libs/jvector/jquery-jvectormap-au-mill.js"></script>
     <script src="~/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="~/dist/js/pages/dashboards/dashboard3.js"></script>
+    @*<script src="~/dist/js/pages/dashboards/dashboard3.js"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

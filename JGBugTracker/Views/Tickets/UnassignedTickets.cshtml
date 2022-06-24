@@ -3,53 +3,74 @@
 
 
 
-<div class="table-responsive" style="overflow-y:auto;height:600px;">
-    <table class="table table-hover">
-        <thead class="">
-            <tr>
-                @* Table header *@
-                <th>Title</th>
-                <th>Developer</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Date</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @* Table body *@
-            @foreach (var ticket in Model.OrderByDescending(d => d.Created))
-            {
-                <tr>
-                    <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
-                    <td>
-                        @if (ticket.DeveloperUserId != null)
-                        {
-                            @ticket.DeveloperUser?.FullName
-                        }
-                        else
-                        {
-                            if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+<!-- basic table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="border-bottom title-part-padding">
+                <h4 class="card-title mb-0">Unassigned Tickets</h4>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3">
+                    Tickets
+                </h6>
+                <div class="table-responsive">
+                    <table id="zero_config" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Developer</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in Model.OrderByDescending(d => d.Created))
                             {
-                                <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                <tr>
+                                    <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
+                                    <td>
+                                        @if (ticket.DeveloperUserId != null)
+                                        {
+                                            @ticket.DeveloperUser?.FullName
+                                        }
+                                        else
+                                        {
+                                            if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+                                            {
+                                                <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                            }
+                                        }
+                                    </td>
+                                    @if (ticket.TicketStatus!.Name == "New")
+                                    {
+                                        <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge-primary">@ticket.TicketStatus.Name </span></td>
+                                    }
+                                    <td><span class="badge">@ticket.TicketPriority!.Name </span></td>
+                                    <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i>Details</a>
+                                    </td>
+                                </tr>
                             }
-                        }
-                    </td>
-                    @if (ticket.TicketStatus!.Name == "New")
-                    {
-                        <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
-                    }
-                    else
-                    {
-                        <td><span class="badge-primary">@ticket.TicketStatus.Name </span></td>
-                    }
-                    <td><span class="badge">@ticket.TicketPriority!.Name </span></td>
-                    <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="~/dist/js/pages/datatable/datatable-basic.init.js"></script>
+    }

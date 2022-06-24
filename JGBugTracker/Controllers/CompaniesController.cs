@@ -24,7 +24,7 @@ namespace JGBugTracker.Controllers
             _infoService = infoService;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         // GET: Companies
         public async Task<IActionResult> Index()
         {

@@ -12228,7 +12228,7 @@ html[dir="rtl"] body {
 
 html[dir="rtl"] .custom-select {
   padding: 0.375rem 0.75rem 0.375rem 1.75rem;
-  background: url(../../src/assets/images/custom-select.png) left 0.35rem center no-repeat #fff; }
+  background: url(/assets/images/custom-select.png) left 0.35rem center no-repeat #fff; }
 
 html[dir="rtl"] .custom-control {
   padding-left: 0;
@@ -13223,7 +13223,7 @@ button:focus {
   border-color: #8898aa !important; }
 
 .form-select {
-  background-image: url(../../src/assets/images/custom-select.png);
+  background-image: url(/assets/images/custom-select.png);
   background-size: auto; }
 
 .card {

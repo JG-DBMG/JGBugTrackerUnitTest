@@ -82,8 +82,9 @@ namespace JGBugTracker.Services
             }
         }
 
-        #endregion    
+        #endregion
 
+        #region Lookup Notification Type Id
         public async Task<int?> LookupNotificationTypeIdAsync(string typeName)
         {
             try
@@ -95,6 +96,7 @@ namespace JGBugTracker.Services
             {
                 throw;
             }
-        }
+        } 
+        #endregion
     }
 }

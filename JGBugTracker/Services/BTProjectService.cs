@@ -278,7 +278,7 @@ namespace JGBugTracker.Services
                 projects = await _context.Projects
                                          .Include(p => p.ProjectPriority)
                                          .Include(p => p.Members)
-                                         .Where(p => p.CompanyId == companyId).ToListAsync();
+                                         .Where(p => p.CompanyId == companyId && p.Archived == false).ToListAsync();
                 foreach (Project project in projects)
                 {
                     if ((await GetProjectMembersByRoleAsync(project.Id, nameof(BTRoles.ProjectManager))).Count == 0)
@@ -322,7 +322,7 @@ namespace JGBugTracker.Services
                                                          .Include(u => u.Projects)!
                                                             .ThenInclude(p => p.Tickets)
                                                                 .ThenInclude(p => p.TicketType)
-                                                         .FirstOrDefaultAsync(u => u.Id == userId))?.Projects!.ToList();
+                                                         .FirstOrDefaultAsync(u => u.Id == userId))?.Projects!.Where(u => u.Archived == false).ToList();
                 return projects!;
             }
             catch (Exception)
@@ -340,7 +340,7 @@ namespace JGBugTracker.Services
             {
                 Project? project = new();
 
-                project = await _context.Projects
+                project = await _context.Projects.Where(p => p.Archived == false)
                                             .Include(p => p.Tickets)
                                                 .ThenInclude(t => t.TicketPriority)
                                             .Include(p => p.Tickets)

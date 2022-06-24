@@ -23,18 +23,24 @@ namespace JGBugTracker.Controllers
         private readonly IBTProjectService _projectService;
         private readonly IBTRolesService _rolesService;
         private readonly IBTFileService _fileService;
+        private readonly IBTLookupService _lookupService;
+        private readonly IBTNotificationService _notificationService;
 
         public ProjectsController(ApplicationDbContext context,
                                   UserManager<BTUser> userManager,
                                   IBTProjectService projectService,
                                   IBTRolesService rolesService,
-                                  IBTFileService fileService)
+                                  IBTFileService fileService,
+                                  IBTLookupService lookupService,
+                                  IBTNotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
             _projectService = projectService;
             _rolesService = rolesService;
             _fileService = fileService;
+            _lookupService = lookupService;
+            _notificationService = notificationService;
         }
 
         // GET: Projects
@@ -214,6 +220,19 @@ namespace JGBugTracker.Controllers
                 {
                     await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
                 }
+
+                // Save/Send Notification
+                //Notification notification = new()
+                //{
+                //    ProjectId = model.Project.Id,
+                //    NotificationTypeId = (await _lookupService.LookupNotificationTypeIdAsync(nameof(BTNotificationTypes.Project))).Value,
+                //    Title = "Project Created",
+                //    Message = $"Project : {model.Project.Name}, was created by {btUser.FullName}",
+                //    SenderId = btUser.Id
+                //};
+
+                //await _notificationService.AddNotificationAsync(notification);
+                //await _notificationService.SendEmailNotificationsByRoleAsync(notification, companyId, nameof(BTRoles.Admin));
 
                 return RedirectToAction(nameof(AllProjects));
             }
@@ -413,7 +432,7 @@ namespace JGBugTracker.Controllers
                 await _projectService.ArchiveProjectAsync(project);
             }
             
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AllProjects));
         }
 
         public async Task<IActionResult> MyProjects()

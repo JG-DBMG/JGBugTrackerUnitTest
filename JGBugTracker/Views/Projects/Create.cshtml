@@ -5,76 +5,83 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Project</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Project!.Name" class="control-label"></label>
-                <input asp-for="Project!.Name" class="form-control" />
-                <span asp-validation-for="Project!.Name" class="text-danger"></span>
+    <div class="col-lg-6 text-center mx-auto">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h4 class="mb-0 text-white">Create A New Project</h4>
             </div>
-            <div class="form-group">
-                <label asp-for="Project!.Description" class="control-label"></label>
-                <input asp-for="Project!.Description" class="form-control" />
-                <span asp-validation-for="Project!.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project!.StartDate" class="control-label"></label>
-                <input asp-for="Project!.StartDate" class="form-control" />
-                <span asp-validation-for="Project!.StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project!.EndDate" class="control-label"></label>
-                <input asp-for="Project!.EndDate" class="form-control" />
-                <span asp-validation-for="Project!.EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project!.ProjectPriorityId" class="control-label"></label>
-                <select asp-for="Project!.ProjectPriorityId" class ="form-control" asp-items="@Model.PriorityList"></select>
-            </div>
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div class="form-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="card-body">
+                        <label asp-for="Project!.Name" class="control-label"></label>
+                        <input asp-for="Project!.Name" class="form-control" />
+                        <span asp-validation-for="Project!.Name" class="text-danger"></span>
+                    </div>
+                    <div class="card-body">
+                        <label asp-for="Project!.Description" class="control-label"></label>
+                        <input asp-for="Project!.Description" class="form-control" />
+                        <span asp-validation-for="Project!.Description" class="text-danger"></span>
+                    </div>
+                    <div class="card-body">
+                        <label asp-for="Project!.StartDate" class="control-label"></label>
+                        <input asp-for="Project!.StartDate" class="form-control" />
+                        <span asp-validation-for="Project!.StartDate" class="text-danger"></span>
+                    </div>
+                    <div class="card-body">
+                        <label asp-for="Project!.EndDate" class="control-label"></label>
+                        <input asp-for="Project!.EndDate" class="form-control" />
+                        <span asp-validation-for="Project!.EndDate" class="text-danger"></span>
+                    </div>
+                    <div class="card-body border-top">
+                        <label asp-for="Project!.ProjectPriorityId" class="control-label"></label>
+                        <select asp-for="Project!.ProjectPriorityId" class="form-control" asp-items="@Model.PriorityList"></select>
+                    </div>
 
-            <div class="form-group">
-                <label class="control-label"> Project Image</label>
-                <input asp-for="Project!.ImageFormFile" class="form-control" type="file" accept=".png,.jpg,.jpeg,.gif"
-                            onchange="document.getElementById('imageFileData').src = window.URL.createObjectURL(this.files[0])" /> 
-                            <span asp-validation-for="Project!.ImageFormFile" class="text-danger"></span>
-            </div> 
-            <label>Image Preview</label>
-            @if (Model.Project?.ImageFileData != null)
-                {
-                    <img id="imageFileData" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.ImageFileData))" class="img-fluid img-thumbnail mt-2" style="width:120px;height:120px">
-                }
-                else
-                {
-                    <img id="imageFileData" class="img-fluid img-thumbnail mt-2" style="width:120px;height:120px" src="https://cdn.icon-icons.com/icons2/2331/PNG/512/task_software_platform_management_project_icon_142266.png">
-                }
+                    <div class="card-body">
+                        <label class="control-label"> Project Image</label>
+                        <input asp-for="Project!.ImageFormFile" class="form-control" type="file" accept=".png,.jpg,.jpeg,.gif"
+                               onchange="document.getElementById('imageFileData').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="Project!.ImageFormFile" class="text-danger"></span>
+                    </div>
+                    <label>Image Preview</label>
+                    @if (Model.Project?.ImageFileData != null)
+                    {
+                        <img id="imageFileData" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.ImageFileData))" class="img-fluid img-thumbnail mt-2" style="width:120px;height:120px">
+                    }
+                    else
+                    {
+                        <img id="imageFileData" class="img-fluid img-thumbnail mt-2" style="width:120px;height:120px" src="https://cdn.icon-icons.com/icons2/2331/PNG/512/task_software_platform_management_project_icon_142266.png">
+                    }
 
-            @if (User.IsInRole(nameof(BTRoles.Admin)))
-            {
-                <div class="form-group">
-                    <label class="control-label"> Project Manager</label>
-                    <select asp-for="PMID" class="form-control" asp-items="@Model.PMList">
-                        <option></option>
-                    </select>
+                    @if (User.IsInRole(nameof(BTRoles.Admin)))
+                    {
+                        <div class="card-body">
+                            <label class="control-label"> Project Manager</label>
+                            <select asp-for="PMID" class="form-control" asp-items="@Model.PMList">
+                                <option></option>
+                            </select>
+                        </div>
+                    }
+
+                    <div class="card-body border-top">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
                 </div>
-            }
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            </form>
+            <div>
+                <a class="btn btn-primary mb-3" asp-action="AllProjects">Back to All Projects</a>
             </div>
-        </form>
+            <div>
+                <a class="btn btn-primary mb-3" asp-action="MyProjects">Back to My Projects</a>
+            </div>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="AllProjects">Back All Projects</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

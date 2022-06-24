@@ -22,7 +22,7 @@
     <div class="container-fluid">
         <div class="row gy-2">
             <div class="col-md-12 col">
-                <div class="row col-cols-2 mt-5 bg-secondary">
+                <div class="row col-cols-2 mt-5 bg-info">
                     <div class="card col m-1 p-2">
                         <div class="body">
                             @* Project Name *@
@@ -136,9 +136,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 col">
-                <div class="mt-5 bg-secondary">
-                    <div class="card m-1 p-2">
+            <div class="col-md-12 col rounded">
+                <div class="mt-5 bg-info">
+                    <div class="card m-1 p-2 rounded">
                         <div class="header">
                             <h2>Tickets</h2>
                         </div>
@@ -171,7 +171,7 @@
                                                     {
                                                         if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                                         {
-                                                            <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Home" asp-route-ticketId="@ticket.Id">Assign Dev</a>
+                                                            <a class="btn btn-sm btn-outline-info" asp-action="AssignDeveloper" asp-controller="Home" asp-route-ticketId="@ticket.Id">Assign Dev</a>
                                                         }
 
                                                     }
@@ -188,15 +188,15 @@
                                                 <td><span class="">@ticket.TicketPriority!.Name </span></td>
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                                 <td>
-                                                    <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i></a>
+                                                    <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify">Details</i></a>
                                                     @if (ticket.DeveloperUserId == btUser.Id || ticket.SubmitterUserId == btUser.Id || (projectManager?.Id == btUser.Id) || User.IsInRole(nameof(BTRoles.Admin)))
                                                     {
-                                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-pencil"></i></a>
+                                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-pencil">Edit</i></a>
                                                     }
 
                                                     @if (User.IsInRole("Admin") || (projectManager?.Id == btUser.Id))
                                                     {
-                                                        <a class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive"></i></a>
+                                                        <a class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive">Archive</i></a>
                                                     }
                                                 </td>
                                             </tr>

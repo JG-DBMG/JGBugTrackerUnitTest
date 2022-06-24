@@ -5,34 +5,46 @@
     ViewData["Title"] = "AssignProjectManager";
 }
 
-<div class="container">
-    <h2>Assign Manager for</h2>
-    <div class="row">
-        <div class="col-md-6">
-            <h3> @Model.Project!.Name</h3>
-            <div class="card">
-                <div class="card-header">
-                    <label class="control-label">Assign project manager for Project</label>
-                </div>
-                <div class="card-body">
-                    <form method="post" asp-action="AssignProjectManager" asp-controller="Projects">
-                        <input hidden asp-for="Project!.Id" />
-                        <div class="col-12 mb-3">
-                            <div class="form-group">
-                                <select required asp-for="@Model.PMID" class="form-control" asp-items="@Model!.PMList" multiple="multiple"></select>
+
+<div class="row">
+    <div class="col text-center">
+        <h2>Assign Manager for</h2>
+        <div class="row">
+            <div class="col text-center">
+                <h3> @Model.Project!.Name</h3>
+                <div class="row">
+                    <div class="col-lg-6 text-center mx-auto">
+                        <div class="card">
+                            <div class="card-header bg-dark">
+                                <h4 class="mb-0 text-white">Assign A Project Manager</h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" asp-action="AssignProjectManager" asp-controller="Projects">
+                                    <input hidden asp-for="Project!.Id" />
+                                    <div class="col-12 mb-3">
+                                        <div class="form-group">
+                                            <select required asp-for="@Model.PMID" class="form-control" asp-items="@Model!.PMList" multiple="multiple"></select>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="col mb-2">
+                                            <input type="submit" class="btn alert-primary" value="Assign PM" />
+                                        </div>
+                                    </div>
+                                </form>
+                                <div>
+                                    <a class="btn alert-primary" asp-action="AllProjects" asp-controller="Projects" asp-route-id="@Model.Project.Id">Back to All Projects</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-lg-offset-2 col-lg-10">
-                                <input type="submit" class="btn alert-primary" value="Assign PM" />
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div>
-        <a asp-action="AllProjects" asp-controller="Projects" asp-route-id="@Model.Project.Id">Back to All Projects</a>
-    </div>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

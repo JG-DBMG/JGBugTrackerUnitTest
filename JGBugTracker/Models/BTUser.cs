@@ -28,6 +28,8 @@ namespace JGBugTracker.Models
 
         [DisplayName("Avatar")]
         public string? AvatarName { get; set; }
+
+        [DisplayName("Avatar Image")]
         public byte[]? AvatarData { get; set; }
 
         [DisplayName("File Extension")]

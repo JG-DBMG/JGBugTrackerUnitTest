@@ -1,84 +1,95 @@
 ﻿@using JGBugTracker.Models.Enums
 @using JGBugTracker.Services.Interfaces
-@model IEnumerable<JGBugTracker.Models.Project>
 
+@model IEnumerable<JGBugTracker.Models.Project>
 @inject IBTFileService _fileService
+@inject IBTProjectService _projectService
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Archived Projects";
 }
+<div class="container-fluid page-content">
+    <!-- basic table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="border-bottom title-part-padding">
+                    <h4 class="card-title mb-0">Archived Company Projects</h4>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3">
+                        Projects
+                    </h6>
+                    <div class="table-responsive">
+                        <table id="zero_config" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><strong>Project Name</strong></th>
+                                    <th><strong>Created</strong></th>
+                                    <th><strong>Start Date</strong></th>
+                                    <th><strong>End Date</strong></th>
+                                    <th><strong>Project Manager</strong></th>
+                                    <th><strong>Priority</strong></th>
+                                    <th><strong>Project Image</strong></th>
+                                    <th><strong>Action</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Project item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(model => item.Name)</td>
+                                        <td>@Html.DisplayFor(model => item.Created)</td>
+                                        <td>@Html.DisplayFor(model => item.StartDate)</td>
+                                        <td>@Html.DisplayFor(model => item.EndDate)</td>
+                                        <td>
+                                            @if (User.Identity!.IsAuthenticated)
+                                            {
+                                                BTUser projectManager = await _projectService.GetProjectManagerAsync(item.Id);
+                                                if (projectManager != null)
+                                                {
+                                                    <p>@projectManager.FullName</p>
+                                                }
+                                                else if (User.IsInRole(nameof(BTRoles.Admin)))
+                                                {
+                                                    <a class="btn btn-xs btn-info" asp-action="AssignProjectManager" asp-route-id="@item.Id">AssignPM</a>
+                                                }
+                                            }
+                                        </td>
+                                        <td>@Html.DisplayFor(model => item.ProjectPriority!.Name)</td>
+                                        <td>
+                                            @if (item.ImageFileData != null)
+                                            {
+                                                <img class="img-fluid" src="@_fileService.ConvertByteArrayToFile(item.ImageFileData!, item.ImageFileContentType!)">
+                                            }
+                                            else
+                                            {
 
-<h1>Archived Projects</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageFileData)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProjectPriority)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            @if (item.Archived == true)
-            {
-
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Created)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndDate)
-                    </td>
-                    <td>
-                        @if (item.ImageFileData != null)
-                        {
-                            <img class="img-fluid" src="@_fileService.ConvertByteArrayToFile(item.ImageFileData!, item.ImageFileContentType!)">
-                        }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProjectPriority!.Name)
-                    </td>
-                    <td>
-                        @if (User.IsInRole(nameof(BTRoles.Admin)))
-                        {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
-                        <a asp-action="Restore" asp-route-id="@item.Id">Restore</a> <span>|</span>                            
-                        }
-
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (User.IsInRole(nameof(BTRoles.Admin)))
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
+                                                <a asp-action="Restore" asp-route-id="@item.Id">Restore</a> <span>|</span>
+                                            }
+                                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="~/dist/js/pages/datatable/datatable-basic.init.js"></script>
+    }

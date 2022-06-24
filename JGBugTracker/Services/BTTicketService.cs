@@ -33,7 +33,7 @@ namespace JGBugTracker.Services
             {
                 throw;
             }
-        } 
+        }
         #endregion
 
         #region Add Ticket Attachment
@@ -69,18 +69,19 @@ namespace JGBugTracker.Services
 
         #endregion
 
+        #region Assign Ticket
         public async Task AssignTicketAsync(int ticketId, string DeveloperId)
         {
             try
             {
                 Ticket? ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
 
-                ticket.DeveloperUserId = DeveloperId;
+                ticket!.DeveloperUserId = DeveloperId;
                 ticket.Created = DateTime.SpecifyKind(ticket.Created, DateTimeKind.Utc);
                 ticket.Updated = DateTime.UtcNow;
 
                 await UpdateTicketAsync(ticket);
-                
+
             }
             catch (Exception)
             {
@@ -88,6 +89,7 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
         #region Get Tickets As No Tracking
         public async Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId)
@@ -208,24 +210,24 @@ namespace JGBugTracker.Services
                 if (await _rolesService.IsUserInRoleAsync(btUser!, nameof(BTRoles.Admin)))
                 {
                     tickets = (await _projectService.GetAllProjectsByCompanyIdAsync(companyId))
-                                                    .SelectMany(p => p.Tickets!).ToList();
+                                                    .SelectMany(p => p.Tickets!.Where(p => p.Archived == false)).ToList();
                 }
                 else if (await _rolesService.IsUserInRoleAsync(btUser!, nameof(BTRoles.Developer)))
                 {
                     tickets = (await _projectService.GetAllProjectsByCompanyIdAsync(companyId))
-                                                    .SelectMany(p => p.Tickets!)
+                                                    .SelectMany(p => p.Tickets!.Where(p => p.Archived == false))
                                                     .Where(t => t.DeveloperUserId == userId || t.SubmitterUserId == userId).ToList();
                 }
                 else if (await _rolesService.IsUserInRoleAsync(btUser!, nameof(BTRoles.Submitter)))
                 {
                     tickets = (await _projectService.GetAllProjectsByCompanyIdAsync(companyId))
-                                                    .SelectMany(t => t.Tickets!).Where(t => t.SubmitterUserId == userId).ToList();
+                                                    .SelectMany(t => t.Tickets!).Where(t => t.SubmitterUserId == userId && t.Archived == false).ToList();
                 }
                 else if (await _rolesService.IsUserInRoleAsync(btUser!, nameof(BTRoles.ProjectManager)))
                 {
                     List<Ticket>? projectTickets = (await _projectService.GetUserProjectsAsync(userId)).SelectMany(t => t.Tickets!).ToList();
                     List<Ticket>? submittedTickets = (await _projectService.GetAllProjectsByCompanyIdAsync(companyId))
-                                                    .SelectMany(p => p.Tickets!).Where(t => t.SubmitterUserId == userId).ToList();
+                                                    .SelectMany(p => p.Tickets!.Where(p => p.Archived == false)).Where(t => t.SubmitterUserId == userId).ToList();
                     tickets = projectTickets.Concat(submittedTickets).ToList();
                 }
 
@@ -254,7 +256,7 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        } 
+        }
         #endregion
 
         #region Get Ticket By Id
@@ -292,7 +294,7 @@ namespace JGBugTracker.Services
             {
                 List<Ticket> tickets = new List<Ticket>();
                 tickets = await _context.Projects.Where(t => t.CompanyId == companyId)
-                                                 .SelectMany(t => t.Tickets.Where(t => t.Archived == false))
+                                                 .SelectMany(t => t.Tickets.Where(t => t.Archived == false && t.DeveloperUser == null))
                                                     .Include(t => t.Attachments)
                                                     .Include(t => t.Comments)
                                                     .Include(t => t.DeveloperUser)
