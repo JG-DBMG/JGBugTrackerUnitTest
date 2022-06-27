@@ -23,6 +23,25 @@ namespace JGBugTracker.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Users()
+        {
+            List<UserRolesViewModel> model = new();
+            int companyId = User.Identity!.GetCompanyId();
+            List<BTUser> btUsers = await _companyInfoService.GetAllMembersAsync(companyId);
+
+            foreach (BTUser btUser in btUsers)
+            {
+                UserRolesViewModel viewModel = new();
+                viewModel.BTUser = btUser;
+                //viewModel.Roles = await _rolesService.GetRoleNameByIdAsync();
+
+                model.Add(viewModel);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ManageUserRoles()
         {
             List<ManageUserRolesViewModel> model = new();
@@ -64,7 +83,7 @@ namespace JGBugTracker.Controllers
             {
                 return RedirectToAction(nameof(ManageUserRoles));
             }
-            return RedirectToAction("Details", "Companies");
+            return RedirectToAction("ManageUserRoles", "UserRoles");
         }
     }
 }

@@ -61,6 +61,13 @@ namespace JGBugTracker.Controllers
             return View(tickets);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddTicketComment(int? id)
+        //{
+
+        //}
+
         public async Task<IActionResult> AssignDeveloper(int? id)
         {
             if (id == null)
@@ -76,8 +83,6 @@ namespace JGBugTracker.Controllers
             return View(model);
             
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

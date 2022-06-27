@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<JGBugTracker.Models.ViewModels.ManageUserRolesViewModel>
 
 <div class="row">
-    <h2 class="m-t-0 h3"><b>Manage Member Roles </b></h2>
+    <h2 class="m-t-0 h3 text-center"><b>Manage Member Roles </b></h2>
     @foreach (var member in Model)
     {
         <div class="row">
-            <div class="card col-4 m-3">
+            <div class="card col-4 m-3 mx-auto">
                 <div class="card-body">
                     <p class="text-muted font-13 m-b-30">
-                        This form displays the current roles assigned to the user: <strong class="text-info">@member.BTUser.FullName</strong>.
+                        This form displays the current roles assigned to the user: <strong class="text-info">@member.BTUser!.FullName</strong>.
                         Use the dropdown to select the roles this user should be assigned.
                         Once roles are selected, click "Assign Roles" to submit the form.
                     </p>

@@ -39,6 +39,11 @@ namespace JGBugTracker.Controllers
             _companyInfoService = companyInfoService;
         }
 
+        public IActionResult LandingPage()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
             return View();

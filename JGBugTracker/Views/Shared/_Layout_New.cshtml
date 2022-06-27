@@ -40,6 +40,9 @@
 </head>
 
 <body>
+    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+          asp-route-returnUrl="@Url.Action("LandingPage", "Home", new { area = "" })">
+    </form>
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
@@ -105,47 +108,41 @@
                             @if (SignInManager.IsSignedIn(User))
                             {
                                 <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36">
+                                    @if (btUser.AvatarFormFile != null)
+                                    {
+                                        <img src="@btUser.AvatarFormFile" alt="user" class="rounded-circle" width="36">
+                                    }
+                                    else
+                                    {
+                                        <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36">
+                                    }
                                     <span class="ms-2 font-weight-medium">@btUser.FirstName</span><span class="fas fa-angle-down ms-2"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
                                     <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
-                                        <div><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60"></div>
+                                        <div class="">
+                                            @if (btUser.AvatarFormFile != null)
+                                            {
+                                                <img src="@btUser.AvatarFormFile" alt="user" class="rounded-circle" width="60">
+                                            }
+                                            else
+                                            {
+                                                <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60">
+                                            }
+                                        </div>
                                         <div class="ms-2">
                                             <h4 class="mb-0 text-white">@btUser.FullName</h4>
-                                            <p class="mb-0">@btUser.Email</p>
+                                            <p class=" mb-0">@btUser.Email</p>
                                         </div>
                                     </div>
                                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
-                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My Profile
+                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My
+                                        Profile
                                     </a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit();">
                                         <i data-feather="log-out"
                                        class="feather-sm text-danger me-1 ms-1"></i> Logout
-                                    </a>
-                                </div>
-                                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
-                                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                </form>
-                            }
-                            else
-                            {
-                                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <div class=""><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36"></div>
-                                    <span class="ms-2 font-weight-medium">Log In</span><span class="fas fa-angle-down ms-2"></span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
-                                    <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
-                                        <div><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60"></div>
-                                    </div>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
-                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> Register
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">
-                                        <i data-feather="log-In"
-                                       class="feather-sm text-danger me-1 ms-1"></i> Sign In
                                     </a>
                                 </div>
                             }
@@ -178,10 +175,34 @@
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-controller="Companies" asp-action="Index" aria-expanded="false">
+                                <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
                                     <i class="mdi mdi-city"></i>
                                     <span class="hide-menu">Companies</span>
+                                    <span class="badge bg-warning text-white rounded-pill ms-auto me-3 font-weight-medium px-2 py-1"></span>
                                 </a>
+                                <ul aria-expanded="false" class="collapse first-level">
+                                    @if (User.IsInRole(nameof(BTRoles.Admin)))
+                                    {
+                                        <li class="sidebar-item">
+                                            <a asp-controller="UserRoles" asp-action="ManageUserRoles" class="sidebar-link">
+                                                <i class="mdi mdi-crop-free"></i>
+                                                <span class="hide-menu">ManageUsers</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    <li class="sidebar-item">
+                                        <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-controller="Companies" asp-action="Index" aria-expanded="false">
+                                            <i class="mdi mdi-city"></i>
+                                            <span class="hide-menu">Companies</span>
+                                        </a>
+                                    </li>
+                                    <li class="sidebar-item">
+                                        <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-controller="UserRoles" asp-action="Users" aria-expanded="false">
+                                            <i class="mdi mdi-account"></i>
+                                            <span class="hide-menu">Users</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             <div class="divider"></div>
                             <li class="sidebar-item">
@@ -301,7 +322,7 @@
             <!-- Container fluid  -->
             <!-- ============================================================== -->
             <div class="page-content container-fluid">
-                @RenderBody();
+                @RenderBody()
             </div>
             <!-- ============================================================== -->
             <!-- End Container fluid  -->

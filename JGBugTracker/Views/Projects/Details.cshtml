@@ -79,8 +79,29 @@
                         </div>
                         <div class="body" style="overflow-y:auto;height:300px;">
                             @* if() logic for Avatar/Default etc *@
-                            [Project Manager]
-
+                            @if (projectManager != null)
+                            {
+                                <ul class="right_chat list-unstyled mb-0">
+                                <li class="">
+                                    <a href="">
+                                        <div class="media">
+                                            @if (projectManager.AvatarData != null)
+                                            {
+                                                <img class="" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.AvatarData))" alt="" />
+                                            }
+                                            else
+                                            {
+                                                <img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+                                            }
+                                        </div>
+                                    </a>
+                                    <div class="">
+                                        <span class="">@projectManager.FullName</span>
+                                        <span class="" style="font-size:x-small">[@((await _userManager.GetRolesAsync(projectManager)).FirstOrDefault())]</span>
+                                    </div>
+                                </li>
+                                </ul>
+                            }
                         </div>
                     </div>
                 </div>

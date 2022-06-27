@@ -39,3 +39,48 @@
 </div>
 <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
 </form>
+@*                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36">
+                                    <span class="ms-2 font-weight-medium">@btUser.FirstName</span><span class="fas fa-angle-down ms-2"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
+                                    <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
+                                        <div><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60"></div>
+                                        <div class="ms-2">
+                                            <h4 class="mb-0 text-white">@btUser.FullName</h4>
+                                            <p class="mb-0">@btUser.Email</p>
+                                        </div>
+                                    </div>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My Profile
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit();">
+                                        <i data-feather="log-out"
+                                       class="feather-sm text-danger me-1 ms-1"></i> Logout
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class=""><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="36"></div>
+                                    <span class="ms-2 font-weight-medium">Log In</span><span class="fas fa-angle-down ms-2"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
+                                    <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
+                                        <div><img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="rounded-circle" width="60"></div>
+                                    </div>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
+                                        <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> Register
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">
+                                        <i data-feather="log-In"
+                                       class="feather-sm text-danger me-1 ms-1"></i> Sign In
+                                    </a>
+                                </div>
+                            }
+*@                        </li>
