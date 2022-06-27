@@ -28,7 +28,7 @@
                             <p>@Model.Description</p>
                             <div class="progress-container progress-info m-b-25">
                                 <span class="progress-badge" style="font-size:small">Project: @Model.Project!.Name</span>
-                                <div class="progress">
+                                <div class="progress" style="height: 1rem;">
 
                                     @{
                                         var start = Model.Project.StartDate.Date;
@@ -50,8 +50,8 @@
                                 <li><strong>Date Entered:</strong> <span class=""> @Model.Created.ToString("dd MMM, yyyy")</</span></li>                                
                                 <li><strong>Deadline:</strong> <span class=""> @Model.Project.EndDate.ToString("dd MMM, yyyy")</</span></li>                                
                                 <li><strong>Type:</strong> <span class=""> @Model.TicketType!.Name</span></li>                                
-                                <li><strong>Priority:</strong> <span class=""> @Model.TicketPriority!.Name</span></li>                                
-                                <li><strong>Status:</strong> <span class=""> @Model.TicketStatus!.Name</span></li>
+                                <li><strong>Priority:</strong> <span class="badge bg-danger rounded-pill"> @Model.TicketPriority!.Name</span></li>                                
+                                <li><strong>Status:</strong> <span class="badge bg-success rounded-pill"> @Model.TicketStatus!.Name</span></li>
                             </ul>
                         </div>
                     </div>

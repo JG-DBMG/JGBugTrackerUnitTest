@@ -1,4 +1,14 @@
-﻿@model IEnumerable<JGBugTracker.Models.ViewModels.UserRolesViewModel>
+﻿@using JGBugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@model JGBugTracker.Models.Company
+
+@inject IBTRolesService _rolesService
+@inject UserManager<BTUser> _userManager
+
+@{
+    ViewData["Title"] = "Users";
+    BTUser btUser = await _userManager.GetUserAsync(User);
+}
 
 
 <div class="row mt-5">
@@ -6,30 +16,34 @@
         <h4 class="card-title">Company Users</h4>
     </div>
 </div>
-
-@foreach (var member in Model)
-{
-    <div class="row el-element-overlay">
-        <div class="col-lg-3 col-md-6 mt-4">
-            <div class="card h-100" style="border-radius: 5px;">
-                <div class="el-card-item pb-3">
-                    <div class="el-card-avatar mb-3 el-overlay-1 w-100 overflow-hidden position-relative text-center">
-                        <a class="image-popup-vertical-fit" href="">
-                            @if (member.BTUser!.AvatarFormFile != null)
-                            {
-                                <img src="@member.BTUser!.AvatarFormFile" alt="user" class="d-block position-relative w-100">
-                            }
-                            else
-                            {
-                                <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="d-block position-relative w-100">
-                            }
-                        </a>
-                    </div>
-                    <div class="el-card-content text-center">
-                        <h4 class="mb-0">@member.BTUser!.FullName</h4> <span class="text-muted">@member.Roles</span>
+<div class="container-fluid page-content">
+    <div class="card-deck">
+        <div class="row el-element-overlay">
+            @foreach (BTUser member in Model.Members)
+            {
+                <div class="col-lg-3 col-md-6 mt-4">
+                    <div class="card h-100" style="border-radius: 5px;">
+                        <div class="el-card-item pb-3">
+                            <div class="el-card-avatar mb-3 el-overlay-1 w-100 overflow-hidden position-relative text-center">
+                                <a class="image-popup-vertical-fit" href="">
+                                    @if (member.AvatarFormFile != null)
+                                    {
+                                        <img src="@member.AvatarFormFile" alt="user" class="d-block position-relative w-100">
+                                    }
+                                    else
+                                    {
+                                        <img src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="user" class="d-block position-relative w-100">
+                                    }
+                                </a>
+                            </div>
+                            <div class="el-card-content text-center">
+                                <h4 class="mb-0">@member.FullName</h4>
+                                <span class="text-muted">@(await _rolesService.GetUserRoleAsync(member))</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
-}
+</div>

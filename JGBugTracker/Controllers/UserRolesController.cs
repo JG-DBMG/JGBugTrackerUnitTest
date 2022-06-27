@@ -1,10 +1,12 @@
-﻿using JGBugTracker.Extensions;
+﻿using JGBugTracker.Data;
+using JGBugTracker.Extensions;
 using JGBugTracker.Models;
 using JGBugTracker.Models.ViewModels;
 using JGBugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace JGBugTracker.Controllers
 {
@@ -15,31 +17,34 @@ namespace JGBugTracker.Controllers
     {
         private readonly IBTCompanyInfoService _companyInfoService;
         private readonly IBTRolesService _rolesService;
+        private readonly ApplicationDbContext _context;
 
-        public UserRolesController(IBTCompanyInfoService companyInfoService, IBTRolesService rolesService)
+        public UserRolesController(IBTCompanyInfoService companyInfoService,
+                                   IBTRolesService rolesService,
+                                   ApplicationDbContext context)
         {
             _companyInfoService = companyInfoService;
             _rolesService = rolesService;
+            _context = context;
         }
 
         [HttpGet]
         public async Task<IActionResult> Users()
+
         {
-            List<UserRolesViewModel> model = new();
             int companyId = User.Identity!.GetCompanyId();
-            List<BTUser> btUsers = await _companyInfoService.GetAllMembersAsync(companyId);
 
-            foreach (BTUser btUser in btUsers)
+            var company = await _context.Companies
+                                        .Include(m => m.Members)
+                                        .FirstOrDefaultAsync(m => m.Id == companyId);
+            if (company == null)
             {
-                UserRolesViewModel viewModel = new();
-                viewModel.BTUser = btUser;
-                //viewModel.Roles = await _rolesService.GetRoleNameByIdAsync();
-
-                model.Add(viewModel);
+                return NotFound();
             }
 
-            return View(model);
+            return View(company);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles()

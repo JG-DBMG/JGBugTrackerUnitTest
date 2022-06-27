@@ -20,19 +20,18 @@
 
 <div>
     <div class="container-fluid">
-        <div class="row gy-2">
+        <div class="row gy-1">
             <div class="col-md-12 col">
-                <div class="row col-cols-2 mt-5 bg-info">
-                    <div class="card col m-1 p-2">
-                        <div class="body">
+                <div class="row col-cols-2 mt-25 bg-dark rounded">
+                    <div class="card col m-1 p-2 rounded">
+                        <div class="card-body ">
                             <h5>@Model.Name</h5>
                             <p>@Model.Description</p>
-                            <div class="progress-container progress-info m-b-25">
-                                <span class="progress-badge" style="font-size:small">Project Status</span>
-                                <div class="progress">
+                            
+
                                     <div class="progress-container progress-info m-b-25">
                                         <span class="progress-badge" style="font-size:small">Project Status</span>
-                                        <div class="progress">
+                                        <div class="progress" style="height: 1rem;">
 
                                             @{
                                                 var start = Model.StartDate;
@@ -46,61 +45,78 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+
+
                         </div>
                     </div>
                     <div class="card col m-1 p-2">
                         <div class="body">
-                            <ul class=" list-unstyled basic-list">
-                                <li>Start Date: <span class="">@Model.StartDate.ToString("MMM dd, yyyy")</span></li>
-                                <li>Deadline: <span class="">@Model.EndDate.ToString("MMM dd, yyyy")</span></li>
+                            <ul class="list-unstyled basic-list">
+                                <li>Start Date: <span class="">@Model.StartDate.ToString("dd MMM, yyyy")</span></li>
+                                <li>Deadline: <span class="">@Model.EndDate.ToString("dd MMM, yyyy")</span></li>
                                 <li>Priority: <span class="">@Model.ProjectPriority!.Name</span></li>
-                                @* if() logic *@
-                                [Project Active/Inactive]
+                                @if (today < end && today >= start)
+                                {
+                                    <li>Status:<span class="badge rounded-pill bg-success"> Active</span></li>
+                                }
+                                else
+                                {
+                                    <li>Status:<span class="badge rounded-pill bg-danger"> Inactive</span></li>
+                                }
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 col mt-5 ">
-                <div class="bg-secondary">
+                <div class="bg-dark">
                     <div class="card m-1 p-2">
                         <div class="header">
                             <h2>Project Manager</h2>
                             <hr />
                         </div>
                         <div class="body" style="overflow-y:auto;height:300px;">
-                            @* if() logic for Avatar/Default etc *@
                             @if (projectManager != null)
                             {
-                                <ul class="right_chat list-unstyled mb-0">
-                                    <li class="">
-                                        <a href="">
-                                            <div class="media">
-                                                @if (projectManager.AvatarData != null)
-                                                {
-                                                    <img class="" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.AvatarData))" alt="" />
-                                                }
-                                                else
-                                                {
-                                                    <img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
-                                                }
-                                            </div>
-                                        </a>
-                                        <div class="">
-                                            <span class="">@projectManager.FullName</span>
-                                            <span class="" style="font-size:x-small">[@((await _userManager.GetRolesAsync(projectManager)).FirstOrDefault())]</span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <div class="media">
+                                    @if (projectManager.AvatarData != null)
+                                    {
+                                        <img class="rounded-circle" style="width:60px;height:60px;" src="data:image/*;base64,@(Convert.ToBase64String(projectManager.AvatarData))" alt="" />
+                                    }
+                                    else
+                                    {
+                                        <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+                                    }
+                                    <div class="">
+                                        <h5 class="">@projectManager.FullName</h5>
+                                        <span>@projectManager.Email</span>
+                                        <p class="text-muted m-b-0">Project Manager</p>
+                                        @if (User.IsInRole(nameof(BTRoles.Admin)) || (btUser.Id == projectManager.Id))
+                                        {
+                                            <a class="btn btn-sm btn-primary" style="font:small" asp-action="AssignProjectMembers" asp-controller="Projects" asp-route-id="@Model.Id">Manage Team</a>
+                                        }                                
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    <img class="rounded-circle" style="width:60px;height:60px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
+                                    <div class="wid-u-info">
+                                        <h5 class="text-muted m-b-0">Not Assigned</h5>
+                                        @if (User.IsInRole(nameof(BTRoles.Admin)))
+                                        {
+                                            <span><a asp-action="AssignProjectManager" asp-controller="Projects" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Assign PM</a></span>
+                                        }
+                                    </div>
+                                </div>
                             }
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 col mt-5 ">
-                <div class="bg-secondary">
+                <div class="bg-dark">
                     <div class="card m-1 p-2">
                         <div class="header">
                             <h2>Project Team</h2>
@@ -115,18 +131,16 @@
                                             <div class="media">
                                                 @if (member.AvatarData != null)
                                                 {
-                                                    <img class="" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarData))" alt="" />
+                                                    <img class="" style="width:30px;height:30px;" src="data:image/*;base64,@(Convert.ToBase64String(member.AvatarData))" alt="" />
                                                 }
                                                 else
                                                 {
                                                     <img class="" style="width:30px;height:30px;" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" />
                                                 }
+                                                <span class="badge bg-info">@member.FullName</span>
+                                                <span class="badge rounded-pill bg-success" style="font-size:x-small">@((await _userManager.GetRolesAsync(member)).FirstOrDefault())</span>
                                             </div>
                                         </a>
-                                        <div class="">
-                                            <span class="">@member.FullName</span>
-                                            <span class="" style="font-size:x-small">[@((await _userManager.GetRolesAsync(member)).FirstOrDefault())]</span>
-                                        </div>
                                     </li>
                                 }
                             </ul>
@@ -153,7 +167,7 @@
                                         <p>The Ticket <b>@history.PropertyName</b> was edited</p>
                                         <p>@($"Previous {history.PropertyName}: {history.OldValue}")</p>
                                         <p>@($"Current {history.PropertyName}: {history.NewValue}")</p>
-                                        </div>
+                                    </div>
                                 </div>
                             }
                         </div>
@@ -162,27 +176,25 @@
                 </div>
             </div>
             <div class="col-md-12 col rounded">
-                <div class="mt-5 bg-info">
+                <div class="mt-5 bg-dark">
                     <div class="card m-1 p-2 rounded">
                         <div class="header">
                             <h2>Tickets</h2>
                         </div>
                         <div class="body">
                             <div class="table-responsive" style="overflow-y:auto;height:600px;">
-                                <table class="table table-hover">
-                                    <thead class="">
+                                <table class="table table-hover border-bottom">
+                                    <thead class="bg-dark text-light">
                                         <tr>
-                                            @* Table header *@
-                                            <th>Title</th>
-                                            <th>Developer</th>
-                                            <th>Status</th>
-                                            <th>Priority</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
+                                            <th><strong>Title</strong></th>
+                                            <th><strong>Developer</strong></th>
+                                            <th><strong>Status</strong></th>
+                                            <th><strong>Priority</strong></th>
+                                            <th><strong>Date</strong></th>
+                                            <th><strong>Action</strong></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @* Table body *@
                                         @foreach (var ticket in Model.Tickets.OrderByDescending(d => d.Created))
                                         {
                                             <tr>
@@ -196,32 +208,32 @@
                                                     {
                                                         if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                                         {
-                                                            <a class="btn btn-sm btn-outline-info" asp-action="AssignDeveloper" asp-controller="Home" asp-route-ticketId="@ticket.Id">Assign Dev</a>
+                                                            <a class="btn btn-sm btn-primary" asp-action="AssignDeveloper" asp-controller="Home" asp-route-ticketId="@ticket.Id">Assign Dev</a>
                                                         }
 
                                                     }
                                                 </td>
                                                 @if (ticket.TicketStatus!.Name == "New")
                                                 {
-                                                    <td><span class="">@ticket.TicketStatus.Name </span></td>
+                                                    <td><span class="badge bg-success">@ticket.TicketStatus.Name </span></td>
 
                                                 }
                                                 else
                                                 {
-                                                    <td><span class="">@ticket.TicketStatus.Name </span></td>
+                                                    <td><span class="badge bg-primary">@ticket.TicketStatus.Name </span></td>
                                                 }
-                                                <td><span class="">@ticket.TicketPriority!.Name </span></td>
+                                                <td><span class="badge bg-warning">@ticket.TicketPriority!.Name </span></td>
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                                 <td>
-                                                    <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify">Details</i></a>
+                                                    <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">Details</a>
                                                     @if (ticket.DeveloperUserId == btUser.Id || ticket.SubmitterUserId == btUser.Id || (projectManager?.Id == btUser.Id) || User.IsInRole(nameof(BTRoles.Admin)))
                                                     {
-                                                        <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-pencil">Edit</i></a>
+                                                        <a class="btn btn-sm btn-success" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a>
                                                     }
 
                                                     @if (User.IsInRole("Admin") || (projectManager?.Id == btUser.Id))
                                                     {
-                                                        <a class="btn btn-sm btn-outline-danger"><i class="fs-5 bi-archive">Archive</i></a>
+                                                        <a class="btn btn-sm btn-danger">Archive</a>
                                                     }
                                                 </td>
                                             </tr>
