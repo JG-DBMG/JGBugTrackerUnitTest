@@ -61,12 +61,30 @@ namespace JGBugTracker.Controllers
             return View(tickets);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> AddTicketComment(int? id)
-        //{
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTicketComment([Bind("Id,TicketId,Comment")] TicketComment ticketComment)
+        {
+            ModelState.Remove("UserId");
 
-        //}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ticketComment.UserId = _userManager.GetUserId(User);
+                    ticketComment.Created = DateTime.UtcNow;
+
+                    await _ticketService.AddTicketCommentAsync(ticketComment);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            
+            return RedirectToAction("Details", new { id = ticketComment.TicketId });
+        }
 
         public async Task<IActionResult> AssignDeveloper(int? id)
         {
@@ -134,6 +152,8 @@ namespace JGBugTracker.Controllers
         public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
+
+            ModelState.Remove("UserId");
 
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {

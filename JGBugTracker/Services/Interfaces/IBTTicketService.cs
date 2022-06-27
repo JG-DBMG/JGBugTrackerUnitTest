@@ -8,6 +8,8 @@ namespace JGBugTracker.Services.Interfaces
 
         public Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment);
 
+        public Task AddTicketCommentAsync(TicketComment ticketComment);
+
         public Task ArchiveTicketAsync(Ticket ticket);
 
         public Task AssignTicketAsync(int ticketId, string DeveloperId);

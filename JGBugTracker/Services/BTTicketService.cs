@@ -69,6 +69,22 @@ namespace JGBugTracker.Services
 
         #endregion
 
+        #region Add Ticket Comment
+        public async Task AddTicketCommentAsync(TicketComment ticketComment)
+        {
+            try
+            {
+                await _context.AddAsync(ticketComment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        } 
+        #endregion
+
         #region Assign Ticket
         public async Task AssignTicketAsync(int ticketId, string DeveloperId)
         {
