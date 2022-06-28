@@ -8,17 +8,14 @@
 
 @{
     ViewData["Title"] = "My Dashboard";
-    @* Instantiate the btUser *@
     BTUser btUser = await UserManager.GetUserAsync(User);
 }
 
 <h1>Company Dashboard</h1>
 <a href="javascript:void(0);">
 </a>
-@* Get The btUser FullName *@
 <strong>@btUser.FullName</strong>
 <span class="text-muted" style="font-size:x-small;">
-    @* Company Name *@
     <strong>@Model.Company!.Name</strong>
 </span>
 
@@ -149,7 +146,7 @@
                     </h6>
                     <div class="table-responsive">
                         <table id="scroll_ver" class="table table-striped table-bordered display" style="width:100%">
-                            <thead>
+                            <thead class="table-dark text-light">
                                 <tr>
                                     <th><strong>Name</strong></th>
                                     <th><strong>Tickets</strong></th>
@@ -157,7 +154,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (Project item in @Model.Projects)
+                                @foreach (Project item in @Model.Projects!)
                                 {
                                     <tr>
                                         <td>@item.Name</td>
@@ -183,7 +180,7 @@
                     </h6>
                     <div class="table-responsive">
                         <table id="scroll_ver_dynamic_hei" class="table table-striped table-bordered display" style="width:100%">
-                            <thead>
+                            <thead class="table-dark text-light">
                                 <tr>
                                     <th><strong>Name</strong></th>
                                     <th><strong>Developer</strong></th>

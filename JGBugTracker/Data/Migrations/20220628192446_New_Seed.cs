@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JGBugTracker.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class New_Seed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -171,8 +171,8 @@ namespace JGBugTracker.Data.Migrations
                     Name = table.Column<string>(type: "character varying(240)", maxLength: 240, nullable: false),
                     Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ProjectPriorityId = table.Column<int>(type: "integer", nullable: false),
                     ImageFileName = table.Column<string>(type: "text", nullable: true),
                     ImageFileData = table.Column<byte[]>(type: "bytea", nullable: true),
@@ -418,31 +418,30 @@ namespace JGBugTracker.Data.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProjectId = table.Column<int>(type: "integer", nullable: true),
-                    ProjectTicket = table.Column<int>(type: "integer", nullable: true),
+                    TicketId = table.Column<int>(type: "integer", nullable: true),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Sender = table.Column<string>(type: "text", nullable: false),
+                    SenderId = table.Column<string>(type: "text", nullable: false),
                     RecipientId = table.Column<string>(type: "text", nullable: false),
                     NotificationTypeId = table.Column<int>(type: "integer", nullable: false),
-                    Viewed = table.Column<bool>(type: "boolean", nullable: false),
-                    TicketId = table.Column<int>(type: "integer", nullable: true),
-                    InvitorId = table.Column<string>(type: "text", nullable: true),
-                    InviteeId = table.Column<string>(type: "text", nullable: true)
+                    Viewed = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_InviteeId",
-                        column: x => x.InviteeId,
+                        name: "FK_Notifications_AspNetUsers_RecipientId",
+                        column: x => x.RecipientId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_InvitorId",
-                        column: x => x.InvitorId,
+                        name: "FK_Notifications_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notifications_NotificationTypes_NotificationTypeId",
                         column: x => x.NotificationTypeId,
@@ -619,16 +618,6 @@ namespace JGBugTracker.Data.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_InviteeId",
-                table: "Notifications",
-                column: "InviteeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Notifications_InvitorId",
-                table: "Notifications",
-                column: "InvitorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Notifications_NotificationTypeId",
                 table: "Notifications",
                 column: "NotificationTypeId");
@@ -637,6 +626,16 @@ namespace JGBugTracker.Data.Migrations
                 name: "IX_Notifications_ProjectId",
                 table: "Notifications",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_RecipientId",
+                table: "Notifications",
+                column: "RecipientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SenderId",
+                table: "Notifications",
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_TicketId",

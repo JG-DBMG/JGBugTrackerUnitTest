@@ -51,7 +51,7 @@ namespace JGBugTracker.Services
             else
             {
                 //Check Ticket Title
-                if (oldTicket.Title != newTicket.Title)
+                if (oldTicket!.Title != newTicket!.Title)
                 {
                     TicketHistory history = new()
                     {
@@ -167,9 +167,9 @@ namespace JGBugTracker.Services
         {
             try
             {
-                Ticket ticket = await _context.Tickets.FindAsync(ticketId);
+                Ticket? ticket = await _context.Tickets.FindAsync(ticketId);
                 string description = model.ToLower().Replace("ticket", "");
-                description = $"New {description} added to ticket: {ticket.Title}";
+                description = $"New {description} added to ticket: {ticket!.Title}";
 
 
                 TicketHistory history = new()
@@ -234,7 +234,7 @@ namespace JGBugTracker.Services
                                                                 .ThenInclude(h => h.User)
                                                          .FirstOrDefaultAsync(p => p.Id == projectId);
 
-                List<TicketHistory> ticketHistory = project.Tickets.SelectMany(t => t.History).ToList();
+                List<TicketHistory> ticketHistory = project!.Tickets.SelectMany(t => t.History).ToList();
 
                 return ticketHistory;
             }

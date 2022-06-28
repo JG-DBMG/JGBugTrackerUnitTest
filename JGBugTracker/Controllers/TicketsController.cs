@@ -75,6 +75,9 @@ namespace JGBugTracker.Controllers
                     ticketComment.Created = DateTime.UtcNow;
 
                     await _ticketService.AddTicketCommentAsync(ticketComment);
+
+                    //Add History
+                    await _ticketHistoryService.AddHistoryAsync(ticketComment.TicketId, nameof(TicketComment), ticketComment.UserId);
                 }
                 catch (Exception)
                 {
@@ -109,8 +112,9 @@ namespace JGBugTracker.Controllers
             if (model.Ticket!.DeveloperUserId != null)
             {
                 BTUser btUser = await _userManager.GetUserAsync(User);
-                //oldTicket
+                //OldTicket
                 Ticket oldTicket = await _ticketService.GetTicketAsNoTrackingAsync(model.Ticket!.Id);
+
                 try
                 {
                     await _ticketService.AssignTicketAsync(model.Ticket.Id, model.Ticket!.DeveloperUserId);
@@ -119,9 +123,10 @@ namespace JGBugTracker.Controllers
                 {
                     throw;
                 }
-                //newTicket
+
+                //NewTicket
                 Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(model.Ticket.Id);
-                // Add History
+                //Add History
                 await _ticketHistoryService.AddHistoryAsync(oldTicket, newTicket, btUser.Id);
                 //Send Notifications
                 //Notify Developer
@@ -157,14 +162,26 @@ namespace JGBugTracker.Controllers
 
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
-                ticketAttachment.FileData = await _fileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
-                ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
-                ticketAttachment.FileContentType = ticketAttachment.FormFile.ContentType;
+                try
+                {
+                    ticketAttachment.FileData = await _fileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
+                    ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
+                    ticketAttachment.FileContentType = ticketAttachment.FormFile.ContentType;
 
-                ticketAttachment.Created = DateTime.UtcNow;
-                ticketAttachment.UserId = _userManager.GetUserId(User);
+                    ticketAttachment.Created = DateTime.UtcNow;
+                    ticketAttachment.UserId = _userManager.GetUserId(User);
 
-                await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+                    await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+
+                    //Add History
+                    await _ticketHistoryService.AddHistoryAsync(ticketAttachment.TicketId, nameof(TicketAttachment), ticketAttachment.UserId);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }                
+                
                 statusMessage = "Success: New attachment added to Ticket.";
             }
             else

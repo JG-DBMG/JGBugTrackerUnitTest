@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JGBugTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220610224312_New_Field_TicketId")]
-    partial class New_Field_TicketId
+    [Migration("20220628192446_New_Seed")]
+    partial class New_Seed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

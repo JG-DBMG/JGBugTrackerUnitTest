@@ -29,6 +29,7 @@ namespace JGBugTracker.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Users()
 
         {
