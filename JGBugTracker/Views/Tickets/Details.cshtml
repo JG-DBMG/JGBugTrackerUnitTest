@@ -228,5 +228,6 @@
 </div>
 
 <div>
-    <a asp-action="AllTickets">Back to List</a>
+    <a class="btn btn-sm btn-primary mt-2" asp-action="AllTickets">Back to List</a>
+    <a class="btn btn-sm btn-primary mt-2" asp-controller="Projects" asp-action="Details" asp-route-id="@Model.Project.Id">Back to Project</a>
 </div>

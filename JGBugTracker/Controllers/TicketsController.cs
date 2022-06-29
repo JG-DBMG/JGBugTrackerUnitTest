@@ -85,7 +85,7 @@ namespace JGBugTracker.Controllers
                     throw;
                 }
             }
-            
+
             return RedirectToAction("Details", new { id = ticketComment.TicketId });
         }
 
@@ -102,7 +102,7 @@ namespace JGBugTracker.Controllers
             model.Developers = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId), "Id", "FullName");
 
             return View(model);
-            
+
         }
 
         [HttpPost]
@@ -180,8 +180,8 @@ namespace JGBugTracker.Controllers
                 {
 
                     throw;
-                }                
-                
+                }
+
                 statusMessage = "Success: New attachment added to Ticket.";
             }
             else
@@ -214,7 +214,7 @@ namespace JGBugTracker.Controllers
         // GET: Tickets/Create
         public async Task<IActionResult> Create()
         {
-            
+
             int companyId = User.Identity!.GetCompanyId();
             string userId = _userManager.GetUserId(User);
 
@@ -226,7 +226,7 @@ namespace JGBugTracker.Controllers
             {
                 ViewData["ProjectId"] = new SelectList(await _projectService.GetUserProjectsAsync(userId), "Id", "Name");
             }
-            
+
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name");
             return View();
@@ -357,7 +357,7 @@ namespace JGBugTracker.Controllers
 
                 return RedirectToAction(nameof(AllTickets));
             }
-            
+
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name", ticket.TicketTypeId);
@@ -442,7 +442,7 @@ namespace JGBugTracker.Controllers
             {
                 await _ticketService.ArchiveTicketAsync(ticket);
             }
-            
+
             return RedirectToAction(nameof(AllTickets));
         }
 
@@ -451,7 +451,7 @@ namespace JGBugTracker.Controllers
             int companyId = User.Identity!.GetCompanyId();
             string userId = _userManager.GetUserId(User);
 
-            List<Ticket> tickets = await _ticketService.GetTicketsByUserIdAsync(userId,companyId);
+            List<Ticket> tickets = await _ticketService.GetTicketsByUserIdAsync(userId, companyId);
             return View(tickets);
         }
 
@@ -468,7 +468,7 @@ namespace JGBugTracker.Controllers
 
         private bool TicketExists(int id)
         {
-          return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         public async Task<IActionResult> UnassignedTickets()

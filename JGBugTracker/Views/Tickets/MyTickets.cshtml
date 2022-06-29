@@ -8,7 +8,7 @@
 
 @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)) || User.IsInRole(nameof(BTRoles.Submitter)))
 {
-    <p><a asp-action="Create"> Create New</a></p>
+    <p><a class="btn btn-sm btn-primary mt-2" asp-action="Create"> Create New</a></p>
 }
 <!-- basic table -->
 <div class="row">

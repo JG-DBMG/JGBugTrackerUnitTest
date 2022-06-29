@@ -25,6 +25,7 @@ namespace JGBugTracker.Controllers
         private readonly IBTFileService _fileService;
         private readonly IBTLookupService _lookupService;
         private readonly IBTNotificationService _notificationService;
+        private readonly IBTTicketHistoryService _ticketHistoryService;
 
         public ProjectsController(ApplicationDbContext context,
                                   UserManager<BTUser> userManager,
@@ -32,7 +33,8 @@ namespace JGBugTracker.Controllers
                                   IBTRolesService rolesService,
                                   IBTFileService fileService,
                                   IBTLookupService lookupService,
-                                  IBTNotificationService notificationService)
+                                  IBTNotificationService notificationService,
+                                  IBTTicketHistoryService ticketHistoryService)
         {
             _context = context;
             _userManager = userManager;
@@ -41,6 +43,7 @@ namespace JGBugTracker.Controllers
             _fileService = fileService;
             _lookupService = lookupService;
             _notificationService = notificationService;
+            _ticketHistoryService = ticketHistoryService;
         }
 
         // GET: Projects
