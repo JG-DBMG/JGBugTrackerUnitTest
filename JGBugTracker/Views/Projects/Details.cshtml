@@ -190,7 +190,7 @@
             <div>
                 @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)) || User.IsInRole(nameof(BTRoles.Submitter)))
                                 {
-                                    <p><a class="btn btn-sm btn-primary mt-2" asp-action="Create"> Create New Ticket</a></p>
+                                    <p><a class="btn btn-sm btn-primary mt-2" asp-controller="Tickets" asp-action="Create"> Create New Ticket</a></p>
                                 }
             </div>
             <div class="col-md-12 col rounded">
