@@ -87,14 +87,14 @@ namespace JGBugTracker.Controllers
             PlotlyBarData plotlyData = new();
             List<PlotlyBar> barData = new();
 
-            int companyId = User.Identity.GetCompanyId();
+            int companyId = User.Identity!.GetCompanyId();
 
             List<Project> projects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
 
             //Bar One
             PlotlyBar barOne = new()
             {
-                X = projects.Select(p => p.Name).ToArray(),
+                X = projects.Select(p => p.Name).ToArray()!,
                 Y = projects.SelectMany(p => p.Tickets).GroupBy(t => t.ProjectId).Select(g => g.Count()).ToArray(),
                 Name = "Tickets",
                 Type = "bar"
@@ -103,7 +103,7 @@ namespace JGBugTracker.Controllers
             //Bar Two
             PlotlyBar barTwo = new()
             {
-                X = projects.Select(p => p.Name).ToArray(),
+                X = projects.Select(p => p.Name).ToArray()!,
                 Y = projects.Select(async p => (await _projectService.GetProjectMembersByRoleAsync(p.Id, nameof(BTRoles.Developer))).Count).Select(c => c.Result).ToArray(),
                 Name = "Developers",
                 Type = "bar"

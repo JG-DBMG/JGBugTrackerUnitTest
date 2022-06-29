@@ -46,7 +46,7 @@ namespace JGBugTracker.Services
                                                                  .Include(n => n.Recipient)
                                                                  .Include(n => n.Sender)
                                                                  .Include(n => n.Ticket)
-                                                                    .ThenInclude(t => t.Project)
+                                                                    .ThenInclude(t => t!.Project)
                                                                  .Where(n => n.RecipientId == userId).ToListAsync();
                 return notifications;
             }
@@ -67,7 +67,7 @@ namespace JGBugTracker.Services
                                                                  .Include(n => n.Recipient)
                                                                  .Include(n => n.Sender)
                                                                  .Include(n => n.Ticket)
-                                                                    .ThenInclude(t => t.Project)
+                                                                    .ThenInclude(t => t!.Project)
                                                                  .Where(n => n.SenderId == userId).ToListAsync();
                 return notifications;
             }
@@ -121,7 +121,7 @@ namespace JGBugTracker.Services
                 foreach (BTUser btUser in members)
                 {
                     notification.RecipientId = btUser.Id;
-                    await SendEmailNotificationAsync(notification, notification.Title);
+                    await SendEmailNotificationAsync(notification, notification.Title!);
                 }
             }
             catch (Exception)
