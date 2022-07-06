@@ -231,3 +231,12 @@
     <a class="btn btn-sm btn-primary mt-2" asp-action="AllTickets">Back to List</a>
     <a class="btn btn-sm btn-primary mt-2" asp-controller="Projects" asp-action="Details" asp-route-id="@Model.Project.Id">Back to Project</a>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="~/dist/js/pages/datatable/datatable-basic.init.js"></script>
+    }

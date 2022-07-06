@@ -68,12 +68,19 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (User.IsInRole(nameof(BTRoles.Admin)))
-                                            {
-                                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
-                                                <a asp-action="Restore" asp-route-id="@item.Id">Restore</a> <span>|</span>
-                                            }
-                                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                            <div class="btn-group">
+                                                <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Action
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-dark">
+                                                    <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Details</a></li>
+                                                    @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+                                                    {
+                                                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Edit</a></li>
+                                                        <li><a class="dropdown-item" asp-action="Restore" asp-route-id="@item.Id">Restore</a></li>
+                                                    }
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 }

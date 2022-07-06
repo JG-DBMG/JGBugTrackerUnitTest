@@ -11,7 +11,7 @@
 
 @if (User.IsInRole(nameof(BTRoles.Admin)))
 {
-    <p><a class="btn btn-info m-3" asp-action="Create">Create New Project</a></p>
+    <p><a class="btn btn-primary m-3" asp-action="Create">Create A New Project</a></p>
 }
 <div class="container-fluid page-content">
     <!-- basic table -->
@@ -36,7 +36,7 @@
                                     <th><strong>Project Manager</strong></th>
                                     <th><strong>Priority</strong></th>
                                     <th><strong>Project Image</strong></th>
-                                    <th><strong>Action</strong></th>
+                                    <th><strong></strong></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,7 +57,7 @@
                                                 }
                                                 else
                                                 {
-                                                    <a class="btn btn-xs btn-info" asp-action="AssignProjectManager" asp-route-id="@item.Id">AssignPM</a>
+                                                    <a class="btn btn-sm btn-primary" asp-action="AssignProjectManager" asp-route-id="@item.Id">AssignPM</a>
                                                 }
                                             }
                                         </td>
@@ -70,7 +70,7 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                     Action
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-dark">

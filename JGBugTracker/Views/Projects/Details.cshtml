@@ -174,13 +174,13 @@
                                         }
                                         else
                                         {
-                                                <p>The Ticket <b>@history.PropertyName</b> was edited</p>
-                                                <p>@($"Previous {history.PropertyName}: {history.OldValue}")</p>
-                                                <p>@($"Current {history.PropertyName}: {history.NewValue}")</p>
+                                            <p>The Ticket <b>@history.PropertyName</b> was edited</p>
+                                            <p>@($"Previous {history.PropertyName}: {history.OldValue}")</p>
+                                            <p>@($"Current {history.PropertyName}: {history.NewValue}")</p>
                                         }
                                     </div>
                                 </div>
-                                <hr  />
+                                <hr />
                             }
                         </div>
 
@@ -189,9 +189,9 @@
             </div>
             <div>
                 @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)) || User.IsInRole(nameof(BTRoles.Submitter)))
-                                {
-                                    <p><a class="btn btn-sm btn-primary mt-2" asp-controller="Tickets" asp-action="Create"> Create New Ticket</a></p>
-                                }
+                {
+                    <p><a class="btn btn-sm btn-primary mt-2" asp-controller="Tickets" asp-action="Create"> Create New Ticket</a></p>
+                }
             </div>
             <div class="col-md-12 col rounded">
                 <div class="mt-5 bg-dark">
@@ -243,16 +243,22 @@
                                                 <td><span class="badge bg-warning">@ticket.TicketPriority!.Name </span></td>
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                                 <td>
-                                                    <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">Details</a>
-                                                    @if (ticket.DeveloperUserId == btUser.Id || ticket.SubmitterUserId == btUser.Id || (projectManager?.Id == btUser.Id) || User.IsInRole(nameof(BTRoles.Admin)))
-                                                    {
-                                                        <a class="btn btn-sm btn-success" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a>
-                                                    }
-
-                                                    @if (User.IsInRole("Admin") || (projectManager?.Id == btUser.Id))
-                                                    {
-                                                        <a class="btn btn-sm btn-danger">Archive</a>
-                                                    }
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-dark">
+                                                            <li><a class="dropdown-item" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">Details</a></li>
+                                                            @if (ticket.DeveloperUserId == btUser.Id || ticket.SubmitterUserId == btUser.Id || (projectManager?.Id == btUser.Id) || User.IsInRole(nameof(BTRoles.Admin)))
+                                                            {
+                                                                <li><a class="dropdown-item" asp-action="Edit" asp-controller="Tickets" asp-route-id="@ticket.Id">Edit</a></li>
+                                                            }
+                                                            @if (User.IsInRole("Admin") || (projectManager?.Id == btUser.Id))
+                                                            {
+                                                                <li><a class="dropdown-item" asp-action="Archive" asp-controller="Tickets" asp-route-id="@ticket.Id">Archive</a></li>
+                                                            }
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         }
@@ -266,3 +272,12 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="~/dist/js/pages/datatable/datatable-basic.init.js"></script>
+    }
