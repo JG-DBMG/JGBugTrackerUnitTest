@@ -8,10 +8,13 @@ namespace JGBugTracker.Services
 {
     public class BTRolesService : IBTRolesService
     {
+        #region Properties
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<BTUser> _userManager;
+        private readonly UserManager<BTUser> _userManager; 
+        #endregion
 
+        #region Constructors
         public BTRolesService(ApplicationDbContext context,
                                RoleManager<IdentityRole> roleManager,
                                UserManager<BTUser> userManager)
@@ -20,7 +23,9 @@ namespace JGBugTracker.Services
             _roleManager = roleManager;
             _userManager = userManager;
         }
+        #endregion
 
+        #region Add User To Role
         public async Task<bool> AddUserToRoleAsync(BTUser user, string roleName)
         {
             try
@@ -34,7 +39,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get BTRoles
         public async Task<List<IdentityRole>> GetBTRolesAsync()
         {
             try
@@ -49,7 +56,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Is User In Role
         public async Task<bool> IsUserInRoleAsync(BTUser user, string roleName)
         {
             try
@@ -63,7 +72,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get User In Role
         public async Task<List<BTUser>> GetUsersInRoleAsync(string roleName, int companyId)
         {
             try
@@ -79,7 +90,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Role Name By Id
         public async Task<string> GetRoleNameByIdAsync(string roleId)
         {
             try
@@ -94,7 +107,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Users Not In Role
         public async Task<List<BTUser>> GetUsersNotInRoleAsync(string roleName, int companyId)
         {
             try
@@ -111,7 +126,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get User Role
         public async Task<string> GetUserRoleAsync(BTUser user)
         {
             try
@@ -125,7 +142,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get User Roles
         public async Task<IEnumerable<string>> GetUserRolesAsync(BTUser user)
         {
             try
@@ -139,7 +158,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Remove User From Role
         public async Task<bool> RemoveUserFromRoleAsync(BTUser user, string roleName)
         {
             try
@@ -153,7 +174,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Remove User From Roles
         public async Task<bool> RemoveUserFromRolesAsync(BTUser user, IEnumerable<string> roles)
         {
             try
@@ -166,6 +189,7 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
     }
 }

@@ -7,20 +7,25 @@ namespace JGBugTracker.Services
 {
     public class BTInviteService : IBTInviteService
     {
-        private readonly ApplicationDbContext _context;
+        #region Properties
+        private readonly ApplicationDbContext _context; 
+        #endregion
 
+        #region Constructor
         public BTInviteService(ApplicationDbContext context)
         {
             _context = context;
         }
+        #endregion
 
+        #region Accept Invite
         public async Task<bool> AcceptInviteAsync(Guid? token, string userId, int companyId)
         {
             try
             {
                 Invite? invite = await _context.Invites.FirstOrDefaultAsync(i => i.CompanyToken == token);
 
-                if(invite == null)
+                if (invite == null)
                 {
                     return false;
                 }
@@ -45,7 +50,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Add New Invite
         public async Task AddNewInviteAsync(Invite invite)
         {
             try
@@ -59,7 +66,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Any Invite
         public async Task<bool> AnyInviteAsync(Guid token, string email, int companyId)
         {
             try
@@ -74,7 +83,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Invite
         public async Task<Invite> GetInviteAsync(int inviteId, int companyId)
         {
             try
@@ -92,7 +103,9 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Get Invite (Overload)
         public async Task<Invite> GetInviteAsync(Guid token, string email, int companyId)
         {
             try
@@ -110,12 +123,14 @@ namespace JGBugTracker.Services
                 throw;
             }
         }
+        #endregion
 
+        #region Validate Invite Code
         public async Task<bool> ValidateInviteCodeAsync(Guid? token)
         {
             try
             {
-                if(token == null)
+                if (token == null)
                 {
                     return false;
                 }
@@ -144,6 +159,7 @@ namespace JGBugTracker.Services
 
                 throw;
             }
-        }
+        } 
+        #endregion
     }
 }

@@ -7,12 +7,16 @@ namespace JGBugTracker.Services
 {
     public class BTCompanyInfoService : IBTCompanyInfoService
     {
-        private readonly ApplicationDbContext _context;
+        #region Properties
+        private readonly ApplicationDbContext _context; 
+        #endregion
 
+        #region Constructors
         public BTCompanyInfoService(ApplicationDbContext context)
         {
             _context = context;
-        }
+        } 
+        #endregion
 
         #region Get All Members
         public async Task<List<BTUser>> GetAllMembersAsync(int companyId)

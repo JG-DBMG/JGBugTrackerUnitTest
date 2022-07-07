@@ -42,6 +42,8 @@
     <Compile Remove="Controllers\TicketPrioritiesController.cs" />
     <Compile Remove="Controllers\TicketStatusController.cs" />
     <Compile Remove="Controllers\TicketTypesController.cs" />
+    <Compile Remove="Services\Interfaces\IPostgresDataService.cs" />
+    <Compile Remove="Services\PostgresDataService.cs" />
   </ItemGroup>
 
   <ItemGroup>

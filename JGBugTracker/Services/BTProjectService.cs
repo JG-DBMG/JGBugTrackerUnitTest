@@ -8,14 +8,18 @@ namespace JGBugTracker.Services
 {
     public class BTProjectService : IBTProjectService
     {
+        #region Properties
         private readonly ApplicationDbContext _context;
-        private readonly IBTRolesService _rolesService;
+        private readonly IBTRolesService _rolesService; 
+        #endregion
 
+        #region Constructor
         public BTProjectService(ApplicationDbContext context, IBTRolesService rolesService)
         {
             _context = context;
             _rolesService = rolesService;
-        }
+        } 
+        #endregion
 
         #region Add New Project
         public async Task AddNewProjectAsync(Project project)

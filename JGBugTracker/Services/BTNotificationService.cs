@@ -8,10 +8,13 @@ namespace JGBugTracker.Services
 {
     public class BTNotificationService : IBTNotificationService
     {
+        #region Properties
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
-        private readonly IBTRolesService _rolesService;
+        private readonly IBTRolesService _rolesService; 
+        #endregion
 
+        #region Constructors
         public BTNotificationService(ApplicationDbContext context,
                                      IEmailSender emailSender,
                                      IBTRolesService rolesService)
@@ -19,7 +22,8 @@ namespace JGBugTracker.Services
             _context = context;
             _emailSender = emailSender;
             _rolesService = rolesService;
-        }
+        } 
+        #endregion
 
         #region Add Notification
         public async Task AddNotificationAsync(Notification notification)

@@ -16,6 +16,7 @@ using JGBugTracker.Models.Enums;
 
 namespace JGBugTracker.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -47,7 +48,6 @@ namespace JGBugTracker.Controllers
         }
 
         // GET: Projects
-        [Authorize]
         public async Task<IActionResult> AllProjects()
         {
             int companyId = User.Identity!.GetCompanyId();
@@ -84,6 +84,7 @@ namespace JGBugTracker.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, ProjectManager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignProjectMembers(ProjectMembersViewModel model)
         {

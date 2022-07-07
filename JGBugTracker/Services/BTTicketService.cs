@@ -8,10 +8,13 @@ namespace JGBugTracker.Services
 {
     public class BTTicketService : IBTTicketService
     {
+        #region Properties
         private readonly ApplicationDbContext _context;
         private readonly IBTRolesService _rolesService;
-        private readonly IBTProjectService _projectService;
+        private readonly IBTProjectService _projectService; 
+        #endregion
 
+        #region Constructors
         public BTTicketService(ApplicationDbContext context,
                                IBTRolesService rolesService,
                                IBTProjectService projectService)
@@ -19,7 +22,8 @@ namespace JGBugTracker.Services
             _context = context;
             _rolesService = rolesService;
             _projectService = projectService;
-        }
+        } 
+        #endregion
 
         #region Add New Ticket
         public async Task AddNewTicketAsync(Ticket ticket)
