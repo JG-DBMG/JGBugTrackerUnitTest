@@ -157,7 +157,7 @@
                                 @foreach (Project item in @Model.Projects!)
                                 {
                                     <tr>
-                                        <td>@item.Name</td>
+                                        <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" style="color:black"><strong>@item.Name</strong></a></td>
                                         <td>@item.Tickets.Count</td>
                                         <td>@item.Members.Count</td>
                                     </tr>
@@ -168,7 +168,6 @@
                 </div>
             </div>
         </div>
-        @* Tickets Table *@
         <div class="col-md-5">
             <div class="card rounded">
                 <div class="border-bottom title-part-padding">
@@ -203,21 +202,21 @@
                                             {
                                                 if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                                 {
-                                                    <a class="btn btn-sm btn-outline-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                                    <a class="btn btn-sm btn-primary" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
                                                 }
                                             }
                                         </td>
                                         @if (ticket.TicketStatus!.Name == "New")
                                         {
-                                            <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
+                                            <td><span class="badge bg-success">@ticket.TicketStatus.Name </span></td>
                                         }
                                         else
                                         {
-                                            <td><span class="badge-primary">@ticket.TicketStatus.Name </span></td>
+                                            <td><span class="badge bg-primary">@ticket.TicketStatus.Name </span></td>
                                         }
                                         <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                         <td>
-                                            <a class="btn btn-sm btn-outline-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">Details</a>
+                                            <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">Details</a>
                                         </td>
                                     </tr>
                                 </tbody>

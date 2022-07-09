@@ -49,10 +49,10 @@ namespace JGBugTracker.Services
                     await RemoveProjectManagerAsync(projectId);
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
-                    throw;
+                    Console.WriteLine($"Error Removing PM. - Error: {ex.Message}");
+                    return false;
                 }
             }
             // Add the new PM
@@ -61,10 +61,10 @@ namespace JGBugTracker.Services
                 //Add Project Manager
                 return await AddUserToProjectAsync(userId, projectId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Console.WriteLine($"Error Adding PM. - Error: {ex.Message}");
+                return false;
             }
         }
         #endregion
@@ -88,7 +88,6 @@ namespace JGBugTracker.Services
                     }
                     catch (Exception)
                     {
-
                         throw;
                     }
                 }
@@ -120,49 +119,6 @@ namespace JGBugTracker.Services
                     await _context.SaveChangesAsync();
                 }
 
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-        #endregion
-
-        #region Get Project Members By Role
-        public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string roleName)
-        {
-            try
-            {
-                Project? project = await _context.Projects
-                                                    .Include(p => p.Members)
-                                                    .FirstOrDefaultAsync(p => p.Id == projectId);
-                List<BTUser> members = new();
-
-                foreach (BTUser user in project!.Members)
-                {
-                    if (await _rolesService.IsUserInRoleAsync(user, roleName))
-                    {
-                        members.Add(user);
-                    }
-                }
-                return members;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-        #endregion
-
-        #region Get Users Not On Project
-        public async Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
-        {
-            try
-            {
-                List<BTUser> users = await _context.Users.Where(u => u.Projects!.All(p => p.ProjectPriorityId != projectId) && u.CompanyId == companyId).ToListAsync();
-                return users;
             }
             catch (Exception)
             {
@@ -299,44 +255,6 @@ namespace JGBugTracker.Services
         }
         #endregion
 
-        #region Get User Projects
-        public async Task<List<Project>> GetUserProjectsAsync(string userId)
-        {
-            try
-            {
-                List<Project>? projects = (await _context.Users
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Company)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Members)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Tickets)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Tickets)
-                                                                .ThenInclude(p => p.DeveloperUser)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Tickets)
-                                                                .ThenInclude(p => p.SubmitterUser)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Tickets)
-                                                                .ThenInclude(p => p.TicketPriority)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Tickets)
-                                                                .ThenInclude(p => p.TicketStatus)
-                                                         .Include(u => u.Projects)!
-                                                            .ThenInclude(p => p.Tickets)
-                                                                .ThenInclude(p => p.TicketType)
-                                                         .FirstOrDefaultAsync(u => u.Id == userId))?.Projects!.Where(u => u.Archived == false).ToList();
-                return projects!;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-        #endregion
-
         #region Get Project By Id
         public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
@@ -395,6 +313,87 @@ namespace JGBugTracker.Services
         }
         #endregion
 
+        #region Get Project Members By Role
+        public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string roleName)
+        {
+            try
+            {
+                Project? project = await _context.Projects
+                                                 .Include(p => p.Members)
+                                                 .FirstOrDefaultAsync(p => p.Id == projectId);
+                List<BTUser> members = new();
+
+                foreach (BTUser user in project!.Members)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(user, roleName))
+                    {
+                        members.Add(user);
+                    }
+                }
+                return members;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+
+        #region Get User Projects
+        public async Task<List<Project>> GetUserProjectsAsync(string userId)
+        {
+            try
+            {
+                List<Project>? projects = (await _context.Users
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Company)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Members)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Tickets)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Tickets)
+                                                                .ThenInclude(p => p.DeveloperUser)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Tickets)
+                                                                .ThenInclude(p => p.SubmitterUser)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Tickets)
+                                                                .ThenInclude(p => p.TicketPriority)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Tickets)
+                                                                .ThenInclude(p => p.TicketStatus)
+                                                         .Include(u => u.Projects)!
+                                                            .ThenInclude(p => p.Tickets)
+                                                                .ThenInclude(p => p.TicketType)
+                                                         .FirstOrDefaultAsync(u => u.Id == userId))?.Projects!.Where(u => u.Archived == false).ToList();
+                return projects!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+
+        #region Get Users Not On Project
+        public async Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
+        {
+            try
+            {
+                List<BTUser> users = await _context.Users.Where(u => u.Projects!.All(p => p.Id != projectId) && u.CompanyId == companyId).ToListAsync();
+                return users;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+
         #region Is User On Project
         public async Task<bool> IsUserOnProjectAsync(string userId, int projectId)
         {
@@ -420,7 +419,7 @@ namespace JGBugTracker.Services
         } 
         #endregion
 
-        #region Remove Users From Project
+        #region Remove User From Project
         public async Task<bool> RemoveUserFromProjectAsync(string userId, int projectId)
         {
             try
@@ -451,6 +450,35 @@ namespace JGBugTracker.Services
         }
         #endregion
 
+        #region Remove Users From Project
+        public async Task RemoveUsersFromProjectAsync(string role, int projectId)
+        {
+            try
+            {
+                List<BTUser>? members = await GetProjectMembersByRoleAsync(projectId, role);
+                Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+
+                foreach (BTUser btUser in members)
+                {
+                    try
+                    {
+                        project!.Members.Remove(btUser);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"**** ERROR **** - Error Removing Users From Project. --> {ex.Message}");
+                throw;
+            }
+        } 
+        #endregion
+
         #region Remove Project Manager
         public async Task RemoveProjectManagerAsync(int projectId)
         {
@@ -459,6 +487,7 @@ namespace JGBugTracker.Services
                 Project? project = await _context.Projects
                                                  .Include(p => p.Members)
                                                  .FirstOrDefaultAsync(p => p.Id == projectId);
+
                 foreach (BTUser member in project?.Members!)
                 {
                     if (await _rolesService.IsUserInRoleAsync(member, nameof(BTRoles.ProjectManager)))

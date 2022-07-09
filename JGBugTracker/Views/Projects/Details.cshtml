@@ -16,7 +16,7 @@
     BTUser projectManager = await _projectService.GetProjectManagerAsync(Model.Id);
 }
 
-<h1>Details</h1>
+<h1>Project Details</h1>
 
 <div>
     <div class="container-fluid">
@@ -52,16 +52,27 @@
                     <div class="card col m-1 p-2">
                         <div class="body">
                             <ul class="list-unstyled basic-list">
-                                <li>Start Date: <span class="">@Model.StartDate.ToString("dd MMM, yyyy")</span></li>
-                                <li>Deadline: <span class="">@Model.EndDate.ToString("dd MMM, yyyy")</span></li>
-                                <li>Priority: <span class="">@Model.ProjectPriority!.Name</span></li>
-                                @if (today < end && today >= start)
+                                <li><strong>Start Date:</strong> <span class="">@Model.StartDate.ToString("dd MMM, yyyy")</span></li>
+                                <li><strong>Deadline:</strong> <span class="">@Model.EndDate.ToString("dd MMM, yyyy")</span></li>
+                                @if (Model.ProjectPriority!.Name == "High")
                                 {
-                                    <li>Status:<span class="badge rounded-pill bg-success"> Active</span></li>
+                                    <li>Priority: <span class="badge bg-danger">@Model.ProjectPriority!.Name</span></li>
+                                }
+                                else if (Model.ProjectPriority!.Name == "Urgent")
+                                {
+                                    <li>Priority: <span class="badge bg-danger">@Model.ProjectPriority!.Name</span></li>
                                 }
                                 else
                                 {
-                                    <li>Status:<span class="badge rounded-pill bg-danger"> Inactive</span></li>
+                                    <li>Priority: <span class="badge bg-warning">@Model.ProjectPriority!.Name</span></li>
+                                }
+                                @if (today < end && today >= start)
+                                {
+                                    <li>Status: <span class="badge bg-success">Active</span></li>
+                                }
+                                else
+                                {
+                                    <li>Status: <span class="badge bg-danger">Inactive</span></li>
                                 }
                             </ul>
                         </div>
@@ -226,7 +237,7 @@
                                                     {
                                                         if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                                         {
-                                                            <a class="btn btn-xs btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                                            <a class="btn btn-sm btn-primary" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
                                                         }
 
                                                     }
@@ -234,17 +245,27 @@
                                                 @if (ticket.TicketStatus!.Name == "New")
                                                 {
                                                     <td><span class="badge bg-success">@ticket.TicketStatus.Name </span></td>
-
                                                 }
                                                 else
                                                 {
                                                     <td><span class="badge bg-primary">@ticket.TicketStatus.Name </span></td>
                                                 }
-                                                <td><span class="badge bg-warning">@ticket.TicketPriority!.Name </span></td>
+                                                @if (ticket.TicketPriority!.Name == "High")
+                                                {
+                                                    <td><span class="badge bg-danger">@ticket.TicketPriority!.Name</span></td>
+                                                }
+                                                else if (ticket.TicketPriority!.Name == "Urgent")
+                                                {
+                                                    <td><span class="badge bg-danger">@ticket.TicketPriority!.Name</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><span class="badge bg-warning">@ticket.TicketPriority!.Name</span></td>
+                                                }
                                                 <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                             Action
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-dark">

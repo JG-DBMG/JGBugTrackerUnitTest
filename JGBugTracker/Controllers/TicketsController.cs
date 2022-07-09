@@ -17,6 +17,7 @@ using JGBugTracker.Models.ViewModels;
 
 namespace JGBugTracker.Controllers
 {
+    [Authorize]
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;

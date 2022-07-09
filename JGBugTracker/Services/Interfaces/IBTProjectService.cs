@@ -31,6 +31,7 @@ namespace JGBugTracker.Services.Interfaces
 
         public Task<bool> IsUserOnProjectAsync(string userId, int projectId);
         public Task<bool> RemoveUserFromProjectAsync(string userId, int projectId);
+        public Task RemoveUsersFromProjectAsync(string role, int projectId);
 
 
         public Task RemoveProjectManagerAsync(int projectId);

@@ -40,7 +40,7 @@
                             @foreach (Ticket ticket in Model)
                             {
                                 <tr>
-                                    <td>@Html.DisplayFor(model => ticket.Title)</td>
+                                    <td><a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id" style="color:black"><strong>@ticket.Title</strong></a> </td>
                                     <td>@Html.DisplayFor(model => ticket.Created)</td>
                                     <td>@Html.DisplayFor(model => ticket.Project!.Name)</td>
                                     <td>@Html.DisplayFor(model => ticket.TicketPriority!.Name)</td>
@@ -56,13 +56,13 @@
                                         {
                                             if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                             {
-                                                <a class="btn btn-sm btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                                <a class="btn btn-sm btn-primary" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
                                             }
                                         }
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 Action
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-dark">

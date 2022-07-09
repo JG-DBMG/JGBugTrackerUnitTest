@@ -40,22 +40,22 @@
                                         {
                                             if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
                                             {
-                                                <a class="btn btn-sm btn-info" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
+                                                <a class="btn btn-sm btn-primary" asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@ticket.Id">Assign Dev</a>
                                             }
                                         }
                                     </td>
                                     @if (ticket.TicketStatus!.Name == "New")
                                     {
-                                        <td><span class="badge-success">@ticket.TicketStatus.Name </span></td>
+                                        <td><span class="text-success">@ticket.TicketStatus.Name </span></td>
                                     }
                                     else
                                     {
-                                        <td><span class="badge-primary">@ticket.TicketStatus.Name </span></td>
+                                        <td><span class="">@ticket.TicketStatus.Name </span></td>
                                     }
-                                    <td><span class="badge">@ticket.TicketPriority!.Name </span></td>
+                                    <td><span class="text-danger">@ticket.TicketPriority!.Name</span></td>
                                     <td>@ticket.Created.ToString("MM-dd-yyyy")</td>
                                     <td>
-                                        <a class="btn btn-sm btn-info" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i>Details</a>
+                                        <a class="btn btn-sm btn-primary" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="fs-5 bi-justify"></i>Details</a>
                                     </td>
                                 </tr>
                             }

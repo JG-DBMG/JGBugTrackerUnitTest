@@ -43,7 +43,7 @@
                                 @foreach (Project item in Model)
                                 {
                                     <tr>
-                                        <td>@Html.DisplayFor(model => item.Name)</td>
+                                        <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" style="color:black"><strong>@item.Name</strong></a> </td>
                                         <td>@Html.DisplayFor(model => item.Created)</td>
                                         <td>@Html.DisplayFor(model => item.StartDate)</td>
                                         <td>@Html.DisplayFor(model => item.EndDate)</td>
