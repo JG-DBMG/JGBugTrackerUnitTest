@@ -149,7 +149,7 @@ namespace JGBugTracker.Controllers
 
                 return RedirectToAction(nameof(Details), new { id = model.Ticket?.Id });
             }
-            return RedirectToAction(nameof(AssignDeveloper));
+            return RedirectToAction(nameof(AssignDeveloper), new { id = model.Ticket?.Id });
         }
 
 

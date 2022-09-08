@@ -21,26 +21,29 @@ namespace JGBugTracker.Services
         #endregion
 
         #region Send Email
-        public async Task SendEmailAsync(string emailTo, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string userEmail, string subject, string htmlMessage)
         {
+            // Configuration Setup
+            string configEmail = _mailSettings.Email ?? Environment.GetEnvironmentVariable("Email")!;
+            string host = _mailSettings.Host ?? Environment.GetEnvironmentVariable("Host")!;
+            int port = _mailSettings.Port != 0 ? _mailSettings.Port : int.Parse(Environment.GetEnvironmentVariable("Port")!);
+            string password = _mailSettings.Password ?? Environment.GetEnvironmentVariable("Password")!;
+            // Email Setup
             MimeMessage email = new();
-
-            email.Sender = MailboxAddress.Parse(_mailSettings.Email);
-            email.To.Add(MailboxAddress.Parse(emailTo));
+            email.Sender = MailboxAddress.Parse(userEmail);
+            email.To.Add(MailboxAddress.Parse(configEmail));
             email.Subject = subject;
-
             var builder = new BodyBuilder
             {
                 HtmlBody = htmlMessage
             };
-
             email.Body = builder.ToMessageBody();
-
+            // Email Send
             try
             {
                 using var smtp = new SmtpClient();
-                smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.Email, _mailSettings.Password);
+                await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(configEmail, password);
                 await smtp.SendAsync(email);
                 smtp.Disconnect(true);
             }
