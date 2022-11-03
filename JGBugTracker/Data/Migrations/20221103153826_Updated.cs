@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JGBugTracker.Data.Migrations
 {
-    public partial class New_Seed : Migration
+    public partial class Updated : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

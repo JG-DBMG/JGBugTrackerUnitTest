@@ -659,8 +659,8 @@ namespace JGBugTracker.Data
                          Name = "Build a Personal Porfolio",
                          Description="Single page html, css & javascript page.  Serves as a landing page for candidates and contains a bio and links to all applications and challenges." ,
                          Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-                         StartDate = DateTime.SpecifyKind(new DateTime(2022,6,20), DateTimeKind.Utc),
-                         EndDate = DateTime.SpecifyKind(new DateTime(2022,6,20).AddMonths(1), DateTimeKind.Utc),
+                         StartDate = DateTime.SpecifyKind(new DateTime(2022,10,20), DateTimeKind.Utc),
+                         EndDate = DateTime.SpecifyKind(new DateTime(2022,10,20).AddMonths(1), DateTimeKind.Utc),
                          ProjectPriorityId = priorityLow
                      },
                      new Project()
@@ -669,8 +669,8 @@ namespace JGBugTracker.Data
                          Name = "Build a supplemental Blog Web Application",
                          Description="Candidate's custom built web application using .Net Core with MVC, a postgres database and hosted in a heroku container.  The app is designed for the candidate to create, update and maintain a live blog site.",
                          Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-                         StartDate = DateTime.SpecifyKind(new DateTime(2022,6,20), DateTimeKind.Utc),
-                         EndDate = DateTime.SpecifyKind(new DateTime(2022,6,20).AddMonths(4), DateTimeKind.Utc),
+                         StartDate = DateTime.SpecifyKind(new DateTime(2022,10,20), DateTimeKind.Utc),
+                         EndDate = DateTime.SpecifyKind(new DateTime(2022,10,20).AddMonths(4), DateTimeKind.Utc),
                          ProjectPriorityId = priorityMedium
                      },
                      new Project()
@@ -679,8 +679,8 @@ namespace JGBugTracker.Data
                          Name = "Build an Issue Tracking Web Application",
                          Description="A custom designed .Net Core application with postgres database.  The application is a multi tennent application designed to track issue tickets' progress.  Implemented with identity and user roles, Tickets are maintained in projects which are maintained by users in the role of projectmanager.  Each project has a team and team members.",
                          Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-                         StartDate = DateTime.SpecifyKind(new DateTime(2022,6,20), DateTimeKind.Utc),
-                         EndDate = DateTime.SpecifyKind(new DateTime(2022,6,20).AddMonths(6), DateTimeKind.Utc),
+                         StartDate = DateTime.SpecifyKind(new DateTime(2022,10,20), DateTimeKind.Utc),
+                         EndDate = DateTime.SpecifyKind(new DateTime(2022,10,20).AddMonths(6), DateTimeKind.Utc),
                          ProjectPriorityId = priorityHigh
                      },
                      new Project()
@@ -689,8 +689,8 @@ namespace JGBugTracker.Data
                          Name = "Build an Address Book Web Application",
                          Description="A custom designed .Net Core application with postgres database.  This is an application to serve as a rolodex of contacts for a given user..",
                          Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-                         StartDate = DateTime.SpecifyKind(new DateTime(2022,6,20), DateTimeKind.Utc),
-                         EndDate = DateTime.SpecifyKind(new DateTime(2022,6,20).AddMonths(2), DateTimeKind.Utc),
+                         StartDate = DateTime.SpecifyKind(new DateTime(2022,10,20), DateTimeKind.Utc),
+                         EndDate = DateTime.SpecifyKind(new DateTime(2022,10,20).AddMonths(2), DateTimeKind.Utc),
                          ProjectPriorityId = priorityLow
                      },
                     new Project()
@@ -699,8 +699,8 @@ namespace JGBugTracker.Data
                          Name = "Build a Movie Information Web Application",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          Created = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-                         StartDate = DateTime.SpecifyKind(new DateTime(2022,6,20), DateTimeKind.Utc),
-                         EndDate = DateTime.SpecifyKind(new DateTime(2022,6,20).AddMonths(3), DateTimeKind.Utc),
+                         StartDate = DateTime.SpecifyKind(new DateTime(2022,10,20), DateTimeKind.Utc),
+                         EndDate = DateTime.SpecifyKind(new DateTime(2022,10,20).AddMonths(3), DateTimeKind.Utc),
                          ProjectPriorityId = priorityHigh
                      }
                 };
