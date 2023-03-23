@@ -52,10 +52,10 @@ namespace JGBugTracker.Tests.ControllerTests
             int companyId = 1;
             DashboardViewModel dashboardViewModel = A.Fake<DashboardViewModel>();
 
-            A.CallTo(() => _companyInfoService.GetCompanyInfoById(companyId)).Returns(dashboardViewModel);
-            A.CallTo(() => _projectService.GetAllProjectsByCompanyIdAsync(companyId)).Returns(dashboardViewModel);
-            A.CallTo(() => _ticketService.GetAllTicketsByCompanyIdAsync(companyId)).Returns(dashboardViewModel);
-            A.CallTo(() => _companyInfoService.GetAllMembersAsync(companyId)).Returns(dashboardViewModel);
+            //A.CallTo(() => _companyInfoService.GetCompanyInfoById(companyId)).Returns(dashboardViewModel);
+            //A.CallTo(() => _projectService.GetAllProjectsByCompanyIdAsync(companyId)).Returns(dashboardViewModel);
+            //A.CallTo(() => _ticketService.GetAllTicketsByCompanyIdAsync(companyId)).Returns(dashboardViewModel);
+            //A.CallTo(() => _companyInfoService.GetAllMembersAsync(companyId)).Returns(dashboardViewModel);
 
             //Act
             var result = _homeController.Dashboard();
