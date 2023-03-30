@@ -14,7 +14,6 @@ namespace JGBugTracker.Controllers
 { 
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTTicketService _ticketService;
         private readonly IBTRolesService _rolesService;
@@ -23,7 +22,6 @@ namespace JGBugTracker.Controllers
         private readonly IBTCompanyInfoService _companyInfoService;
 
         public HomeController(ILogger<HomeController> logger,
-                              ApplicationDbContext context,
                               UserManager<BTUser> userManager,
                               IBTTicketService ticketService,
                               IBTRolesService rolesService,
@@ -31,7 +29,6 @@ namespace JGBugTracker.Controllers
                               IBTCompanyInfoService companyInfoService)
         {
             _logger = logger;
-            _context = context;
             _userManager = userManager;
             _ticketService = ticketService;
             _rolesService = rolesService;
