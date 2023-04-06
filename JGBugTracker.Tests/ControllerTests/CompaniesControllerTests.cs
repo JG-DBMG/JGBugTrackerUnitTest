@@ -105,5 +105,81 @@ namespace JGBugTracker.Tests.ControllerTests
             result.Should().NotBeNull();
             result.Should().BeOfType<Task<IActionResult>>();
         }
+
+        [Fact]
+        public async void Edit_Returns_IActionResult()
+        {
+            // Arrange
+            var id = 1;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = companiesController.Edit(id);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<Task<IActionResult>>();
+        }
+
+        [Fact]
+        public async void Create_Returns_IActionResult()
+        {
+            // Arrange
+            var (dbContext, controllerContext) = await GetDbContext();
+            var company = A.Fake<Company>();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = companiesController.Create(company);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<Task<IActionResult>>();
+        }
+
+        [Fact]
+        public async void Delete_Returns_IActionResult()
+        {
+            // Arrange
+            var id = 1;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = companiesController.Delete(id);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<Task<IActionResult>>();
+        }
+
+        [Fact]
+        public async void DeleteConfirmed_Returns_IActionResult()
+        {
+            // Arrange
+            var id = 1;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = companiesController.DeleteConfirmed(id);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<Task<IActionResult>>();
+        }
     }
 }
