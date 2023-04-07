@@ -19,13 +19,16 @@ namespace JGBugTracker.Tests.ControllerTests
 {
     public class CompaniesControllerTests
     {
+        #region Dependancies
         private IBTCompanyInfoService _companyInfoService;
 
         public CompaniesControllerTests()
         {
             _companyInfoService = A.Fake<IBTCompanyInfoService>();
-        }
+        } 
+        #endregion
 
+        #region MockUps
         private async Task<(ApplicationDbContext, ControllerContext)> GetDbContext()
         {
             // create claims for the user
@@ -67,8 +70,10 @@ namespace JGBugTracker.Tests.ControllerTests
             }
             return (databaseContext, controllerContext);
         }
+        #endregion
 
 
+        #region HappyPath
         [Fact]
         public async void Index_Returns_IActionResult()
         {
@@ -181,5 +186,80 @@ namespace JGBugTracker.Tests.ControllerTests
             result.Should().NotBeNull();
             result.Should().BeOfType<Task<IActionResult>>();
         }
+        #endregion
+
+        #region SadPath
+        [Fact]
+        public async void Details_NullIdReturns_NotFound()
+        {
+            // Arrange
+            int? id = null;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = await companiesController.Details(id);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async void Details_NullCompanyReturns_NotFound()
+        {
+            // Arrange
+            int id = 1;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = await companiesController.Details(id + 1);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async void Edit_NullIdReturns_NotFound()
+        {
+            // Arrange
+            int? id = null;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = await companiesController.Edit(id);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async void Edit_NullCompanyReturns_NotFound()
+        {
+            // Arrange
+            int id = 1;
+            var (dbContext, controllerContext) = await GetDbContext();
+            var companiesController = new CompaniesController(dbContext, _companyInfoService)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
+            var result = await companiesController.Edit(id + 1);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+        #endregion
     }
 }
